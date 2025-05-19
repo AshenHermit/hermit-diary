@@ -25,10 +25,10 @@ export function ConfirmDialog({
   apiRef: React.MutableRefObject<ConfirmDialogApi | null>;
   onConfirm: () => Promise<void>;
   danger?: boolean;
-  title?: string | React.ReactElement;
-  description?: string | React.ReactElement;
-  cancelContent?: string | React.ReactElement;
-  okContent?: string | React.ReactElement;
+  title?: string | React.ReactElement<any>;
+  description?: string | React.ReactElement<any>;
+  cancelContent?: string | React.ReactElement<any>;
+  okContent?: string | React.ReactElement<any>;
 }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);

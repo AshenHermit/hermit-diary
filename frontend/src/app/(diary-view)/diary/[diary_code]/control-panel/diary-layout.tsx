@@ -49,7 +49,7 @@ export type TabData = {
   name: string;
   icon: (typeof tabsRaw)[0]["icon"];
   writePermission: boolean;
-  content: React.ReactElement;
+  content: React.ReactElement<any>;
 };
 const tabs: TabData[] = tabsRaw as any;
 

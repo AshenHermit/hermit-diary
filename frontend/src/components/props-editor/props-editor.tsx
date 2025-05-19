@@ -212,7 +212,7 @@ export const ImagePropComponent: React.FC<
 
 export type PropertyType<T> = {
   key: string;
-  icon: React.ReactElement;
+  icon: React.ReactElement<any>;
   deserialize: (value: PropertyValueType) => T;
   serialize: (value: T) => PropertyValueType;
   component: React.FC<PropComponentProps<T>>;
