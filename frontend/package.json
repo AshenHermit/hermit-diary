@@ -8,7 +8,10 @@
   "scripts": {
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check-types": "tsc --pretty --noEmit",
+    "format": "prettier --write \"**/*.+(js|json|ts|tsx)\"",
+    "validate": "npm-run-all --parallel check-types lint format"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
