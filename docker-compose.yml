@@ -1,0 +1,90 @@
+version: "3.5"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    container_name: hdiary_postgres
+    volumes:
+      - hdiary_db:/var/lib/postgresql/data
+    ports:
+      - "${DB_EXTERNAL_PORT}:5432"
+    networks:
+      - hermit_diary
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: hdiary_pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - "${PGADMIN_EXTERNAL_PORT}:80"
+    depends_on:
+      - db
+    networks:
+      - hermit_diary
+
+  backend:
+    build:
+      context: ./backend
+    container_name: hdiary_backend
+    restart: always
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_SYNC=${DB_SYNC}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - PORT=${PORT}
+      - STORAGE_DIR=${STORAGE_DIR}
+      - GOOGLE_AUTH_CLIENT_ID=${GOOGLE_AUTH_CLIENT_ID}
+      - GOOGLE_AUTH_CLIENT_SECRET=${GOOGLE_AUTH_CLIENT_SECRET}
+      - GOOGLE_AUTH_CALLBACK=${GOOGLE_AUTH_CALLBACK}
+      - SITE_HOST=${SITE_HOST}
+      - COMMON_DOMAIN=${COMMON_DOMAIN}
+      - TZ=${TZ}
+    ports:
+      - "${BACKEND_EXTERNAL_PORT}:3000"
+    depends_on:
+      - db
+    volumes:
+      - hdiary_uploads:${STORAGE_DIR}
+    networks:
+      - hermit_diary
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: hdiary_frontend
+    restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    ports:
+      - "${FRONTEND_EXTERNAL_PORT}:3000"
+    depends_on:
+      - backend
+    networks:
+      - hermit_diary
+
+  nginx:
+    container_name: hdiary_nginx
+    restart: always
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+    ports:
+      - "${NGINX_EXTERNAL_PORT}:8080"
+    depends_on:
+      - frontend
+      - backend
+
+networks:
+  hermit_diary:
+    driver: bridge
+
+volumes:
+  hdiary_db:
+  hdiary_uploads:
