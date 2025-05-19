@@ -52,18 +52,18 @@ export function SidebarProfileLayout({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <SidebarProvider className="grid grid-cols-[auto_1fr] overflow-hidden rounded-3xl min-h-0 h-full">
+    <SidebarProvider className="grid h-full min-h-0 grid-cols-[auto_1fr] overflow-hidden rounded-3xl">
       <Sidebar
         variant="sidebar"
         collapsible="icon"
-        className="relative min-h-[50vh] h-full"
+        className="relative h-full min-h-[50vh]"
       >
         <SidebarHeader>
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                <SidebarMenuItem className="flex gap-4 items-center overflow-hidden">
-                  <Avatar className="w-4 h-4">
+                <SidebarMenuItem className="flex items-center gap-4 overflow-hidden">
+                  <Avatar className="h-4 w-4">
                     <AvatarImage src={picture}></AvatarImage>
                   </Avatar>
                   Profile
@@ -94,11 +94,11 @@ export function SidebarProfileLayout({ children }: React.PropsWithChildren) {
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
-      <SidebarInset className="bg-transparent glass grid grid-rows-[auto_1fr]">
+      <SidebarInset className="glass grid grid-rows-[auto_1fr] bg-transparent">
         <div>
           <SidebarTrigger className="p-6" />
         </div>
-        <main className=" min-h-full">{children}</main>
+        <main className="min-h-full">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

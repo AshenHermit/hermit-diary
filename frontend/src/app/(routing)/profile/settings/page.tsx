@@ -48,20 +48,20 @@ export default function Page() {
   const loaded = useUserStore((state) => state.loaded);
 
   return (
-    <div className="flex flex-col gap-4 h-full p-8 pt-0">
+    <div className="flex h-full flex-col gap-4 p-8 pt-0">
       {loaded ? (
         <>
           <HorizontalDivider>Profile picture</HorizontalDivider>
           <ProfilePictureEditor />
           <HorizontalDivider>Info</HorizontalDivider>
-          <div className="grid grid-cols-[1fr_1px_1fr] gap-4 h-full">
+          <div className="grid h-full grid-cols-[1fr_1px_1fr] gap-4">
             <PersonalInfoEditor />
             <div className="bg-muted"></div>
             <SocialLinksEditor />
           </div>
         </>
       ) : (
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="flex h-full w-full items-center justify-center">
           <LoadingSpinner />
         </div>
       )}
@@ -88,7 +88,7 @@ function ProfilePictureEditor() {
           description: "profile pic changed",
           action: (
             <>
-              <Avatar className="w-16 h-16">
+              <Avatar className="h-16 w-16">
                 <AvatarImage src={file.url}></AvatarImage>
               </Avatar>
             </>
@@ -96,7 +96,7 @@ function ProfilePictureEditor() {
         });
       }
     },
-    [toast]
+    [toast],
   );
 
   return (
@@ -108,10 +108,10 @@ function ProfilePictureEditor() {
         onLoadingStateChange={setIsLoadingImages}
       >
         <div className="flex flex-col items-center gap-2">
-          <Avatar className="w-32 h-32">
+          <Avatar className="h-32 w-32">
             <AvatarImage src={picture}></AvatarImage>
           </Avatar>
-          <Button variant="default" className="-mt-8 z-10">
+          <Button variant="default" className="z-10 -mt-8">
             edit
           </Button>
         </div>
@@ -156,7 +156,7 @@ function PersonalInfoEditor() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4 items-start"
+          className="flex flex-col items-start gap-4"
         >
           <FormField
             control={form.control}
@@ -277,7 +277,7 @@ function SocialLinkEditItem({
         if (onUpdate) onUpdate();
       });
     },
-    [userId, socialLink]
+    [userId, socialLink],
   );
 
   const deleteLink = React.useCallback(async () => {
@@ -290,7 +290,7 @@ function SocialLinkEditItem({
 
   return (
     <>
-      <div className="p-2 border-2 rounded-lg grid grid-cols-[38px_1fr_38px] items-center gap-4">
+      <div className="grid grid-cols-[38px_1fr_38px] items-center gap-4 rounded-lg border-2 p-2">
         <Button onClick={() => setOpen(true)} className="aspect-square px-0">
           <PencilIcon />
         </Button>

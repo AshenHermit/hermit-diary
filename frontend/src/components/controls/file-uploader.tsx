@@ -36,9 +36,9 @@ export function FileUploader({
     const filteredFiles = files.filter((file) =>
       types.some((type) =>
         FileExtensions[type]?.includes(
-          file.name.split(".").pop()?.toLowerCase() || ""
-        )
-      )
+          file.name.split(".").pop()?.toLowerCase() || "",
+        ),
+      ),
     );
 
     if (filteredFiles.length === 0) return;
@@ -63,7 +63,7 @@ export function FileUploader({
         if (item.kind !== "file") return false;
         const fileExt = item.type.split("/").pop()?.toLowerCase();
         return types.some((type) =>
-          FileExtensions[type]?.includes(fileExt || "")
+          FileExtensions[type]?.includes(fileExt || ""),
         );
       });
 

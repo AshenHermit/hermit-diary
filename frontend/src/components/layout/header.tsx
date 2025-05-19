@@ -4,9 +4,9 @@ import Link from "next/link";
 export function Header() {
   return (
     <div className="glass">
-      <div className="layout py-4 flex justify-between items-center">
+      <div className="layout flex items-center justify-between py-4">
         <Link href="/">
-          <div className="font-extrabold text-xl flex items-center gap-4">
+          <div className="flex items-center gap-4 text-xl font-extrabold">
             Hermit Diary
           </div>
         </Link>

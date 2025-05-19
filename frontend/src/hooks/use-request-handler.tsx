@@ -19,7 +19,7 @@ export function useRequestHandler() {
       }
       setLoading(false);
     },
-    []
+    [],
   );
   return { loading, error, handleRequest };
 }
