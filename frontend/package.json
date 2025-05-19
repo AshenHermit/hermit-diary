@@ -62,7 +62,7 @@
     "react-konva": "^18.0.0",
     "react-konva-utils": "^1.1.0",
     "slate": "^0.102.0",
-    "slate-dom": "^0.102.0",
+    "slate-dom": "^0.114.0",
     "slate-react": "^0.102.0",
     "tailwind-merge": "^3.2.0",
     "tailwindcss-animate": "^1.0.7",
