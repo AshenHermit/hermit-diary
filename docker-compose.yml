@@ -59,6 +59,8 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     container_name: hdiary_frontend
     restart: always
     environment:
@@ -70,7 +72,7 @@ services:
     networks:
       - hermit_diary
 
-  nginx:
+  hdiary_nginx:
     image: nginx:stable
     container_name: hdiary_nginx
     restart: always
@@ -81,10 +83,15 @@ services:
     depends_on:
       - frontend
       - backend
+    networks:
+      - hermit_diary
+      - shared-net
 
 networks:
   hermit_diary:
     driver: bridge
+  shared-net:
+    external: true
 
 volumes:
   hdiary_db:
