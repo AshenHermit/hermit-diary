@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
-import "@styles/global.css";
+import "@/styles/global.css";
 import classNames from "classnames";
 
 import { Montserrat, Roboto_Slab } from "next/font/google";
