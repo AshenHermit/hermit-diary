@@ -15,12 +15,27 @@ export function UserProvider() {
 }
 
 export function Providers({ children }: React.PropsWithChildren) {
-  return (
+  const [mounted, setMounted] = React.useState(false);
+
+  const contents = (
     <>
-      <ThemeProvider defaultTheme="dark" themes={["dark", "light"]}>
-        <UserProvider />
-        {children}
-      </ThemeProvider>
+      <UserProvider />
+      {children}
     </>
   );
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (mounted) {
+    return (
+      <>
+        <ThemeProvider defaultTheme="dark" themes={["dark", "light"]}>
+          {contents}
+        </ThemeProvider>
+      </>
+    );
+  }
+  return contents;
 }
