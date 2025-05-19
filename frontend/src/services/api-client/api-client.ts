@@ -1,5 +1,5 @@
 import { createEvent, EventHandler } from "@/lib/event-utils";
-import { NEXT_PUBLIC_API_URL } from "@constants";
+import { NEXT_PUBLIC_API_URL } from "@/constants";
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 
 export class APIError extends AxiosError {}
@@ -38,7 +38,7 @@ export class ApiClient {
   }
   async delete<T, R>(endpoint: string, data?: R) {
     return this.processResponse<T>(
-      this.axios.delete(endpoint, { params: data })
+      this.axios.delete(endpoint, { params: data }),
     );
   }
 
@@ -50,7 +50,7 @@ export class ApiClient {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      })
+      }),
     );
   }
 }

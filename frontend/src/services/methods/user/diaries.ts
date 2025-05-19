@@ -1,7 +1,7 @@
 import { Diary, DiaryProperties } from "@/services/types/diary";
 import { PropertiesDTO } from "@/services/types/properties";
-import { apiClient } from "@services/api-client/client-api";
-import { User } from "@services/types/user";
+import { apiClient } from "@/services/api-client/client-api";
+import { User } from "@/services/types/user";
 
 export async function getUserDiaries(userId: number) {
   return await apiClient.get<Diary[], {}>(`users/${userId}/diaries`);

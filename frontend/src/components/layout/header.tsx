@@ -1,4 +1,4 @@
-import { ProfileShortcut } from "@components/profile-shortcut/profile-shortcut";
+import { ProfileShortcut } from "@/components/profile-shortcut/profile-shortcut";
 import Link from "next/link";
 
 export function Header() {

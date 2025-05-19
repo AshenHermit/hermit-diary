@@ -1,6 +1,6 @@
 import { Diary } from "@/services/types/diary";
 import { DiaryNote, VerboseNote } from "@/services/types/notes";
-import { apiClient } from "@services/api-client/client-api";
+import { apiClient } from "@/services/api-client/client-api";
 
 export async function addDiaryNote(diaryId: number) {
   return await apiClient.post<DiaryNote, {}>(`diaries/${diaryId}/notes`);

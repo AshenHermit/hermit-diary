@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserStore } from "@store/user-store";
+import { useUserStore } from "@/store/user-store";
 import { ThemeProvider } from "next-themes";
 import React from "react";
 

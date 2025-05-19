@@ -1,7 +1,7 @@
 "use client";
 
 import { profileLinks } from "@/app/(routing)/profile/sidebar-layout";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,18 +9,11 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/hooks/user-hooks";
-import { apiClient } from "@services/api-client/client-api";
-import { useLocalUserPicture, useUserStore } from "@store/user-store";
-import { useSession } from "next-auth/react";
+import { useLocalUserPicture, useUserStore } from "@/store/user-store";
 import Link from "next/link";
 import React from "react";
 

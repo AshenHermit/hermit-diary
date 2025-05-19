@@ -1,4 +1,4 @@
-import { NEXT_PUBLIC_API_URL } from "@constants";
+import { NEXT_PUBLIC_API_URL } from "@/constants";
 import axios from "axios";
 import { ApiClient } from "./api-client";
 

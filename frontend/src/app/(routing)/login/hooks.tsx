@@ -1,6 +1,6 @@
 "use client";
 
-import { NEXT_PUBLIC_API_URL } from "@constants";
+import { NEXT_PUBLIC_API_URL } from "@/constants";
 import { useRouter } from "next/navigation";
 import React from "react";
 

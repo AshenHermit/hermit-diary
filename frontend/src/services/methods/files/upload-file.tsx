@@ -1,5 +1,4 @@
-import { apiClient } from "@services/api-client/client-api";
-import { User } from "@services/types/user";
+import { apiClient } from "@/services/api-client/client-api";
 
 export type UploadResult = {
   message: string;

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
 import "@styles/global.css";
-import { Header } from "@components/layout/header";
-import { Footer } from "@components/layout/footer";
 import classNames from "classnames";
 
 import { Montserrat, Roboto_Slab } from "next/font/google";
