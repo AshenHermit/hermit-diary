@@ -71,6 +71,7 @@ services:
       - hermit_diary
 
   nginx:
+    image: nginx:stable
     container_name: hdiary_nginx
     restart: always
     volumes:
