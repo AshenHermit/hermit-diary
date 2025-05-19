@@ -46,6 +46,7 @@ export class PropertiesService {
     targetType: PropertyTargetType,
     targetIds: number[],
   ) {
+    if (targetIds.length == 0) return [];
     const properties = await this.propertiesRepository
       .createQueryBuilder('prop')
       .where('prop.targetType = :targetType', { targetType })
