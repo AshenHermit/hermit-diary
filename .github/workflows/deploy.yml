@@ -29,7 +29,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
-            echo "${{ secrets.ENV_VARS }}" > .env
             docker compose down --remove-orphans
             docker compose pull
             docker compose build
