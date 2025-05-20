@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Copy files via SSH
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -22,7 +22,7 @@ jobs:
           target: ${{ secrets.DEPLOY_DIR }}
 
       - name: Run docker-compose on server
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
