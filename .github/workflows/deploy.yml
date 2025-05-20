@@ -17,9 +17,8 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
+          password: ${{ secrets.SSH_KEY }}
           source: "."
-          port: 22
           target: ${{ secrets.DEPLOY_DIR }}
 
       - name: Run docker-compose on server
@@ -27,8 +26,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
-          port: 22
+          password: ${{ secrets.SSH_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
             docker compose down --remove-orphans
