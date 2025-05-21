@@ -1,5 +1,6 @@
 "use client";
 
+import { InfoPanel } from "@/app/(diary-view)/diary/[diary_code]/control-panel/info-panel";
 import { NotesManager } from "@/app/(diary-view)/diary/[diary_code]/control-panel/notes-manager";
 import { SelectedNotePanel } from "@/app/(diary-view)/diary/[diary_code]/control-panel/selected-note-panel";
 import { SettingsPanel } from "@/app/(diary-view)/diary/[diary_code]/control-panel/settings-panel";
@@ -13,6 +14,7 @@ import classNames from "classnames";
 import {
   CircleDotDashedIcon,
   FolderTreeIcon,
+  InfoIcon,
   PanelRightIcon,
   SettingsIcon,
 } from "lucide-react";
@@ -42,7 +44,14 @@ const tabsRaw = [
     writePermission: true,
     content: <SettingsPanel />,
   },
+  {
+    key: "info",
+    name: "info",
+    icon: InfoIcon,
+    content: <InfoPanel />,
+  },
 ] as const;
+
 export type TabKey = (typeof tabsRaw)[number]["key"];
 export type TabData = {
   key: TabKey;
@@ -96,6 +105,7 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
       <Suspense>
         <SelectedNoteLoader />
         <TabSelector />
+        <SearchParamsSetter />
       </Suspense>
       <div className="flex flex-col bg-sidebar">
         {availableTabs.map((tab) => (
@@ -123,7 +133,7 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
             <div
               key={tab.key}
               className={classNames("h-full max-h-full overflow-y-auto", {
-                hidden: selectedTabData?.key != tab.key,
+                "sr-only hidden": selectedTabData?.key != tab.key,
               })}
             >
               {tab.content}
@@ -205,13 +215,13 @@ function TabButton({
   );
 }
 
-function TabSelector({}: {}) {
-  const currentTab = useDiaryStore((state) => state.currentTab);
+const tabParamKey = "tab";
+
+function TabSelector() {
   const setCurrentTab = useDiaryStore((state) => state.setCurrentTab);
 
   const tabParamKey = "tab";
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const writePermission = useDiaryStore((state) => state.writePermission);
   const loaded = useDiaryStore((state) => state.loaded);
@@ -239,25 +249,17 @@ function TabSelector({}: {}) {
     }
   }, [selectedTab, setCurrentTab, writePermission]);
 
-  React.useEffect(() => {
-    if (!loaded) return;
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(tabParamKey, currentTab);
-    router.replace(`?${params.toString()}`);
-  }, [currentTab, loaded]);
-
   return null;
 }
 
-function SelectedNoteLoader({}) {
+const noteParamKey = "note";
+const lastSelectedNoteStorageKey = "lastSelectedNote";
+
+function SelectedNoteLoader() {
   const selectedNote = useDiaryStore((state) => state.selectedNote);
   const setSelectedNote = useDiaryStore((state) => state.setSelectedNote);
   const notes = useDiaryStore((state) => state.notes);
-  const storageKey = "lastSelectedNote";
-  const noteParamKey = "note";
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const loaded = useDiaryStore((state) => state.loaded);
 
   React.useEffect(() => {
     const paramNoteCode = searchParams.get(noteParamKey);
@@ -272,7 +274,7 @@ function SelectedNoteLoader({}) {
       return;
     }
     if (!selectedNote) {
-      const lastNoteKey = localStorage.getItem(storageKey);
+      const lastNoteKey = localStorage.getItem(lastSelectedNoteStorageKey);
       if (lastNoteKey) {
         const noteSearch = notes.filter((x) => x.id == Number(lastNoteKey));
         if (noteSearch.length > 0) {
@@ -282,14 +284,33 @@ function SelectedNoteLoader({}) {
     }
   }, [notes, searchParams]);
 
+  return null;
+}
+
+function SearchParamsSetter() {
+  const router = useRouter();
+  const loaded = useDiaryStore((state) => state.loaded);
+  const currentTab = useDiaryStore((state) => state.currentTab);
+  const searchParams = useSearchParams();
+  const selectedNote = useDiaryStore((state) => state.selectedNote);
+
   React.useEffect(() => {
+    if (loaded) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(tabParamKey, currentTab);
+      router.replace(`?${params.toString()}`);
+    }
+
     if (selectedNote) {
-      localStorage.setItem(storageKey, selectedNote.id.toString());
+      localStorage.setItem(
+        lastSelectedNoteStorageKey,
+        selectedNote.id.toString(),
+      );
       const params = new URLSearchParams(searchParams.toString());
       params.set(noteParamKey, encodeId("note", selectedNote.id));
       router.replace(`?${params.toString()}`);
     }
-  }, [selectedNote, searchParams]);
+  }, [currentTab, loaded, selectedNote, searchParams]);
 
   return null;
 }

@@ -12,22 +12,21 @@ export function DiaryStylesApplier({
   properties: DiaryProperties;
 }) {
   properties = { ...defaultDiaryProperties, ...properties };
-  const propertiesToCss: Record<keyof DiaryProperties, string> = {
+  const propertiesToCss: Record<keyof DiaryProperties, string | null> = {
     accentColor: "--accent-color",
     backgroundImage: "--bg-image",
+    coverImage: null,
   };
 
   React.useEffect(() => {
     (Object.keys(propertiesToCss) as Array<keyof DiaryProperties>).forEach(
       (key) => {
         const value = properties[key];
-        if (typeof value === "string") {
-          document.body.style.setProperty(propertiesToCss[key], value);
+        if (typeof value === "string" && propertiesToCss[key]) {
+          const varName = propertiesToCss[key];
+          document.body.style.setProperty(varName, value);
           if (value.indexOf(".") != -1)
-            document.body.style.setProperty(
-              propertiesToCss[key],
-              `url(${value})`,
-            );
+            document.body.style.setProperty(varName, `url(${value})`);
         }
       },
     );

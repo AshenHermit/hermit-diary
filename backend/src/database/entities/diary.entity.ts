@@ -37,6 +37,12 @@ export class Diary {
   name: string;
 
   @ApiProperty({
+    description: 'rich text content structure',
+  })
+  @Column({ nullable: true, default: null, type: 'jsonb', select: true })
+  description: Record<string, any>;
+
+  @ApiProperty({
     example: 'https://site.com/picture.webp',
     description: 'picture',
   })

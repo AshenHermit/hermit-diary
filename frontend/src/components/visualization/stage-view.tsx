@@ -6,6 +6,7 @@ import React from "react";
 import { Stage } from "react-konva";
 
 export type StageViewProps = React.PropsWithChildren & {
+  onScroll?: (x: number, y: number) => void;
   onDrag?: (x: number, y: number) => void;
   canMoveStage?: boolean;
   dragMouseButton?: number;
@@ -15,6 +16,7 @@ export type StageViewProps = React.PropsWithChildren & {
 export function StageView({
   children,
   onDrag,
+  onScroll: onScrollExternal,
   canMoveStage = true,
   dragMouseButton = 1,
   zoom = true,
@@ -87,6 +89,8 @@ export function StageView({
   const onScroll = React.useCallback(
     (e: Konva.KonvaEventObject<WheelEvent>) => {
       const stage = e.target.getStage();
+      if (onScrollExternal) onScrollExternal(e.evt.deltaX, e.evt.deltaY);
+
       if (!stage) return;
       if (!zoom) return;
       const oldScale = stage.scaleX();

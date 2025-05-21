@@ -1,3 +1,5 @@
+import { GlobalUser } from "@/services/types/user";
+
 export type Diary = {
   id: number;
   createdAt: string;
@@ -5,11 +7,14 @@ export type Diary = {
   name: string;
   picture: string;
   isPublic: boolean;
+  user: GlobalUser;
+  description: Record<string, any> | null;
 };
 
 export type DiaryProperties = {
   accentColor?: string;
   backgroundImage?: string;
+  coverImage?: string;
 };
 
 export const defaultDiaryProperties: DiaryProperties = {

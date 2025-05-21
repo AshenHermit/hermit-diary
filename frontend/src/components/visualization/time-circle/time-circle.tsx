@@ -10,13 +10,14 @@ import {
 } from "@/components/visualization/notes-graph/NotesGraphWorld";
 import { StageView } from "@/components/visualization/stage-view";
 import { useLayerAnimation } from "@/hooks/use-animation-frame";
-import { clamp } from "@/lib/math-utils";
+import { clamp, mod } from "@/lib/math-utils";
 import { DiaryNote } from "@/services/types/notes";
 import Konva from "konva";
 import { Context } from "konva/lib/Context";
 import React, { forwardRef } from "react";
 import { Layer, Shape, Stage } from "react-konva";
 import { default as Simplex } from "@/lib/perlin-simple";
+import { monthsTitles } from "@/lib/time-utils";
 
 export type NoteCircleState = {
   viewPosition: number;
@@ -36,10 +37,12 @@ export type NotesCircleProps = {
   onNoteSelected: (note: DiaryNote) => void;
   activeNoteId?: number | null;
   accentColor?: string;
+  birthDate?: Date;
+  zeroYear?: number;
   state: NoteCircleStateRef;
 };
 
-export function useTimeCircleState(notes: DiaryNote[]) {
+export function useCreateTimeCircleState(notes: DiaryNote[]) {
   const dataRef = React.useRef<NoteCircleState>({
     slowViewPosition: 0,
     viewPosition: 0,
@@ -74,7 +77,18 @@ export function useTimeCircleState(notes: DiaryNote[]) {
   return dataRef;
 }
 export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
-  ({ notes, onNoteSelected, activeNoteId, accentColor, state }, ref) => {
+  (
+    {
+      notes,
+      onNoteSelected,
+      activeNoteId,
+      accentColor,
+      state,
+      birthDate,
+      zeroYear = 2025,
+    },
+    ref,
+  ) => {
     const api = React.useRef<TimeCircleApi>({
       state: state,
     });
@@ -107,6 +121,10 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
 
     const onDrag = React.useCallback((x: number, y: number) => {
       state.current.viewPosition += x * 0.02;
+    }, []);
+
+    const onScroll = React.useCallback((x: number, y: number) => {
+      state.current.viewPosition += y * -0.01;
     }, []);
 
     const nodesById = React.useRef<Record<number, NoteCirlceApi>>({});
@@ -237,45 +255,84 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
     }, [activeNoteId, showNotes]);
 
     return (
-      <StageView
-        canMoveStage={false}
-        dragMouseButton={0}
-        onDrag={onDrag}
-        zoom={false}
-      >
-        <Layer>
-          <MonthsArc data={state} />
-          <CursorLine data={state} />
-          <NotesGraphWorld
-            worldSettings={{
-              ...defaultWorldSettings,
-              attractionStrength: -0.2,
-              linkStrength: 0.02,
-              linkDistance: 10,
-            }}
-            processNote={processNode}
-            updateDeps={notes}
-          >
-            {notes
-              .map((note) => {
-                return [
-                  <NoteCircle
-                    key={note.id}
-                    note={note}
-                    accentColor={accentColor}
-                    active={note.id == activeNoteId}
-                    onSelected={handleNoteSelection}
-                    draggable={false}
-                  />,
-                ];
-              })
-              .flat(1)}
-          </NotesGraphWorld>
-        </Layer>
-      </StageView>
+      <div className="flex h-full w-full items-center justify-center">
+        <TimeDisplay state={state} zeroYear={zeroYear} birthDate={birthDate} />
+        <StageView
+          canMoveStage={false}
+          dragMouseButton={0}
+          onDrag={onDrag}
+          onScroll={onScroll}
+          zoom={false}
+        >
+          <Layer>
+            <MonthsArc data={state} />
+            <CursorLine data={state} />
+            <NotesGraphWorld
+              worldSettings={{
+                ...defaultWorldSettings,
+                attractionStrength: -0.2,
+                linkStrength: 0.02,
+                linkDistance: 10,
+              }}
+              processNote={processNode}
+              updateDeps={notes}
+            >
+              {notes
+                .map((note) => {
+                  return [
+                    <NoteCircle
+                      key={note.id}
+                      note={note}
+                      accentColor={accentColor}
+                      active={note.id == activeNoteId}
+                      onSelected={handleNoteSelection}
+                      draggable={false}
+                    />,
+                  ];
+                })
+                .flat(1)}
+            </NotesGraphWorld>
+          </Layer>
+        </StageView>
+      </div>
     );
   },
 );
+
+function positionToYear(pos: number, startYear: number) {
+  return startYear + Math.floor(pos / 12);
+}
+function positionToMonth(pos: number) {
+  return mod(Math.floor(pos), 12);
+}
+
+function TimeDisplay({
+  state,
+  birthDate,
+  zeroYear,
+}: {
+  state: NoteCircleStateRef;
+  birthDate?: Date;
+  zeroYear: number;
+}) {
+  const [year, setYear] = React.useState(0);
+  const [month, setMonth] = React.useState(0);
+
+  useLayerAnimation(
+    (frame) => {
+      setYear(positionToYear(state.current.viewPosition, zeroYear));
+      setMonth(positionToMonth(state.current.viewPosition));
+    },
+    [zeroYear],
+  );
+
+  return (
+    <div className="flex flex-col items-center gap-2 text-foreground/70">
+      <div className="text-3xl font-bold">{year}</div>
+      <div className="font-semibold">{monthsTitles[month]}</div>
+    </div>
+  );
+}
 
 function postPositionToAngle(position: number) {
   var angle_offset = ((2 * Math.PI) / 12) * 2.5;

@@ -42,8 +42,12 @@ export function SelectedNotePanel() {
   const notes = useDiaryStore((state) => state.notes);
   const writePermission = useDiaryStore((state) => state.writePermission);
 
-  const [editMode, setEditMode] = React.useState(false);
+  const [editMode, setEditMode] = React.useState(writePermission);
   const { note } = useDiaryNote(selectedNote?.id, [notes]);
+
+  React.useEffect(() => {
+    setEditMode(writePermission);
+  }, [writePermission]);
 
   const forceUpdate = React.useCallback(() => {
     forceUpdateNotes();

@@ -8,6 +8,14 @@ export type User = {
   birthday: string | null;
 };
 
+export type GlobalUser = {
+  id: number;
+  email: string;
+  name: string;
+  picture: string;
+  birthday: string | null;
+};
+
 export type SocialLink = {
   id: number;
   url: string;

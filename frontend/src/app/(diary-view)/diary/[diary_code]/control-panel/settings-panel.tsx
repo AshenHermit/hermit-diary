@@ -6,6 +6,7 @@ import {
   ConfirmDialog,
   ConfirmDialogApi,
 } from "@/components/controls/confirmation-dialog";
+import { RichContentView } from "@/components/note-editor/rich-content-editor";
 import {
   OptionSchema,
   PropertiesEditor,
@@ -52,7 +53,12 @@ import {
 } from "@/services/types/diary";
 import { zodResolver } from "@hookform/resolvers/zod";
 import debounce from "just-debounce-it";
-import { BoltIcon, CircleDashedIcon, TriangleAlertIcon } from "lucide-react";
+import {
+  BoltIcon,
+  CircleDashedIcon,
+  ScrollText,
+  TriangleAlertIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -67,6 +73,15 @@ const sections = [
       </>
     ),
     content: <GeneralSettings />,
+  },
+  {
+    key: "description",
+    title: (
+      <>
+        <ScrollText /> Описание
+      </>
+    ),
+    content: <DiaryDescriptionEditor />,
   },
   {
     key: "properties",
@@ -114,6 +129,7 @@ type DiaryGeneralInfer = z.infer<typeof diaryGeneralSchema>;
 function GeneralSettings() {
   const { toast } = useToast();
   const diaryData = useDiaryStore((state) => state);
+  const loadDiary = useDiaryStore((state) => state.loadDiary);
 
   const form = useForm<DiaryGeneralInfer>({
     mode: "all",
@@ -130,6 +146,7 @@ function GeneralSettings() {
         const dataToUpdate = diaryGeneralSchema.parse(data);
         handleRequest(async () => {
           await updateDiary(dataToUpdate);
+          loadDiary(diaryData.id);
           toast({ title: "Saved!", description: "settings saved" });
         });
       }, 500),
@@ -236,6 +253,13 @@ const DiaryPropsOptions: Record<keyof DiaryProperties, OptionSchema<any>> = {
     type: PropTypes.image,
     default: defaultDiaryProperties.backgroundImage,
   },
+  coverImage: {
+    title: "Cover Image",
+    description: "upload cover image",
+    key: "coverImage",
+    type: PropTypes.image,
+    default: defaultDiaryProperties.coverImage,
+  },
 };
 
 function PropertiesSection() {
@@ -272,5 +296,30 @@ function PropertiesSection() {
         editMode={writePermission}
       />
     </div>
+  );
+}
+
+export function DiaryDescriptionEditor({ readOnly }: { readOnly?: boolean }) {
+  const actualDescription = useDiaryStore((state) => state.description);
+  const diaryId = useDiaryStore((state) => state.id);
+  const loadDiary = useDiaryStore((state) => state.loadDiary);
+  // const description = React.useMemo(() => actualDescription, [diaryId]);
+  const writePermission = useDiaryStore((state) => state.writePermission);
+
+  const handleDebouncedSave = React.useCallback(
+    async (data: Record<string, any>) => {
+      let updateData = { id: diaryId, description: data };
+      await updateDiary(updateData);
+      loadDiary(diaryId);
+    },
+    [diaryId],
+  );
+
+  return (
+    <RichContentView
+      readOnly={!writePermission}
+      defaultValue={actualDescription}
+      onDebouncedSave={handleDebouncedSave}
+    />
   );
 }

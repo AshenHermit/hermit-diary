@@ -119,6 +119,9 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
         ? "#989898"
         : noteProps.color;
 
+    let noteTitle = note.name;
+    if (!note.isPublic) noteTitle = "⭕ " + noteTitle;
+
     return (
       <Group ref={groupRef} draggable={draggable} x={0} y={0}>
         <Text
@@ -129,7 +132,7 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
           height={500}
           align="center"
           verticalAlign="bottom"
-          text={note.name}
+          text={noteTitle}
           fill={"white"}
           hitFunc={() => false}
         />

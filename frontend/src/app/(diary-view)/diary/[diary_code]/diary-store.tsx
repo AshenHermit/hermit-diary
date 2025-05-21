@@ -16,6 +16,7 @@ import {
   DiaryProperties,
 } from "@/services/types/diary";
 import { DiaryNote, VerboseNote } from "@/services/types/notes";
+import { defaultUserObject } from "@/store/user-store";
 import React from "react";
 import { createStore, StoreApi, useStore } from "zustand";
 
@@ -43,6 +44,8 @@ export const defaultDiary: Diary = {
   picture: "",
   createdAt: "",
   updatedAt: "",
+  description: null,
+  user: defaultUserObject,
 };
 
 const createDiaryStore = () => {

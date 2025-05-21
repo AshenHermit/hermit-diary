@@ -48,6 +48,7 @@ export function NoteReferenceElement({
         }
       >
         {elProps.note ? elProps.note.name : null}
+        {children}
       </Button>
     );
   }
@@ -64,6 +65,7 @@ export function NoteReferenceElement({
         value={elProps.note ? elProps.note : null}
         onValueChange={onValueChange}
       />
+      {children}
     </div>
   );
 }
