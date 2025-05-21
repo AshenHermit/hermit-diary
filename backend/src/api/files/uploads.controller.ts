@@ -31,8 +31,9 @@ export class UploadsController {
 
   @Get(':filename')
   streamFile(@Param('filename') filename: string, @Res() res: Response) {
-    const filepath = join(this.config.storage.dir, filename);
-    const file = createReadStream(join(process.cwd(), filepath));
+    let filepath = join(this.config.storage.dir, filename);
+    if (filepath.startsWith('.')) filepath = join(process.cwd(), filepath);
+    const file = createReadStream(filepath);
     file.pipe(res);
   }
 }
