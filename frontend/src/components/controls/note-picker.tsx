@@ -48,16 +48,9 @@ export function NotePicker({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {value ? value.name : "Select note..."}
-          <ChevronsUpDown />
-        </Button>
+      <PopoverTrigger className="flex w-[200px] items-center justify-between p-2">
+        {value ? value.name : "Select note..."}
+        <ChevronsUpDown />
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>

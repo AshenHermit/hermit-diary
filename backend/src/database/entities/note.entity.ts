@@ -45,8 +45,7 @@ export class Note {
   isPublic: boolean;
 
   @ApiProperty({
-    example: 'true',
-    description: 'is public',
+    description: 'rich text content structure',
   })
   @Column({ nullable: true, default: null, type: 'jsonb', select: false })
   content: Record<string, any>;

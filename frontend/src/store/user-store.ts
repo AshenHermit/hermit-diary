@@ -17,7 +17,7 @@ export type UserState = LocalUser & {
   loaded: boolean;
 };
 
-const userDefaults: LocalUser = {
+export const defaultUserObject: LocalUser = {
   id: -1,
   name: "",
   birthday: null,
@@ -27,7 +27,7 @@ const userDefaults: LocalUser = {
 };
 
 export const useUserStore = create<UserState>()((set, get) => ({
-  ...userDefaults,
+  ...defaultUserObject,
   loaded: false,
   setUser: (user: LocalUser) => set((state) => user),
   loadUser: () => {
@@ -40,7 +40,7 @@ export const useUserStore = create<UserState>()((set, get) => ({
         set((state) => ({ loaded: true }));
       })
       .catch((e) => {
-        set((state) => ({ loaded: true, ...userDefaults }));
+        set((state) => ({ loaded: true, ...defaultUserObject }));
       });
   },
 }));

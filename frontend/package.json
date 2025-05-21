@@ -51,6 +51,7 @@
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "eventemitter3": "^5.0.1",
     "framer-motion": "^12.6.5",
     "hashids": "^2.3.0",
     "just-debounce-it": "^3.2.0",

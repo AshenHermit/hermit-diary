@@ -13,3 +13,6 @@ export function clamp(value: number, min?: number, max?: number) {
   if (max) clampedValue = Math.min(max, clampedValue);
   return clampedValue;
 }
+export function mod(x: number, y: number) {
+  return x - y * Math.floor(x / y);
+}

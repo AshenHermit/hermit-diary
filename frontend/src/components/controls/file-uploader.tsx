@@ -66,8 +66,8 @@ export function FileUploader({
           FileExtensions[type]?.includes(fileExt || ""),
         );
       });
-
-      if (hasValidFiles) {
+      console.log(areaRef.current);
+      if (hasValidFiles && e.target == areaRef.current) {
         setIsDragging(true);
       }
     };
@@ -87,8 +87,10 @@ export function FileUploader({
 
     const onDrop = async (e: DragEvent) => {
       e.preventDefault();
-      setIsDragging(false);
-      handleFiles(e.dataTransfer ? e.dataTransfer?.files : null);
+      if (isDragging) {
+        setIsDragging(false);
+        handleFiles(e.dataTransfer ? e.dataTransfer?.files : null);
+      }
     };
 
     window.addEventListener("dragenter", onDragEnter);
@@ -102,7 +104,7 @@ export function FileUploader({
       window.removeEventListener("dragleave", onDragLeave);
       window.removeEventListener("drop", onDrop);
     };
-  }, [types, onUpload, areaRef]);
+  }, [types, onUpload, areaRef, isDragging]);
 
   return (
     <>

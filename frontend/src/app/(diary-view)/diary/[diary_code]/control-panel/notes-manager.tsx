@@ -24,7 +24,12 @@ import {
 import { useRequestHandler } from "@/hooks/use-request-handler";
 import { addDiaryNote, deleteDiaryNote } from "@/services/methods/user/notes";
 import { DiaryNote } from "@/services/types/notes";
-import { CirclePlusIcon, MousePointer2Icon, Trash2Icon } from "lucide-react";
+import {
+  CirclePlusIcon,
+  EyeOffIcon,
+  MousePointer2Icon,
+  Trash2Icon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -85,7 +90,10 @@ function NoteItem({ note }: { note: DiaryNote }) {
             onClick={onClick}
           >
             {note.name}
-            {note.id == selectedNote?.id ? <MousePointer2Icon /> : null}
+            <div className="flex gap-2">
+              {!note.isPublic ? <EyeOffIcon /> : null}
+              {note.id == selectedNote?.id ? <MousePointer2Icon /> : null}
+            </div>
           </Button>
         </ContextMenuTrigger>
         <ContextMenuContent>

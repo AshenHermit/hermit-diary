@@ -41,10 +41,13 @@ import {
   BinaryIcon,
   CircleDashedIcon,
   CircleIcon,
+  ImageIcon,
+  ImagePlusIcon,
   PaletteIcon,
   RulerDimensionLineIcon,
   XIcon,
 } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 export type PropViewComponentProps<T> = {
@@ -173,9 +176,7 @@ export const ImagePropComponent: React.FC<
           description: "image uploaded",
           action: (
             <>
-              <Avatar className="h-16 w-16">
-                <AvatarImage src={file.url}></AvatarImage>
-              </Avatar>
+              <ImagePropView src={file.url} />
             </>
           ),
         });
@@ -187,11 +188,9 @@ export const ImagePropComponent: React.FC<
   return (
     <div>
       {readOnly ? (
-        <Avatar className="h-32 w-32">
-          <AvatarImage src={value}></AvatarImage>
-        </Avatar>
+        <ImagePropView src={value} />
       ) : (
-        <div className="flex items-center justify-center" ref={uploadRef}>
+        <div className="flex items-center" ref={uploadRef}>
           <FileUploader
             types={[FileType.Image]}
             onUpload={onUpload}
@@ -199,9 +198,7 @@ export const ImagePropComponent: React.FC<
             onLoadingStateChange={setIsLoadingImages}
           >
             <div className="flex flex-col items-center gap-2">
-              <Avatar className="h-32 w-32">
-                <AvatarImage src={value}></AvatarImage>
-              </Avatar>
+              <ImagePropView src={value} />
             </div>
           </FileUploader>
         </div>
@@ -209,6 +206,26 @@ export const ImagePropComponent: React.FC<
     </div>
   );
 };
+
+function ImagePropView({ src }: { src?: string }) {
+  return (
+    <div className="flex h-[80px] w-[80px] items-center justify-center rounded-xl border-2">
+      {src ? (
+        <Image
+          alt="image property"
+          src={src}
+          width={80}
+          height={80}
+          className="h-full w-full overflow-hidden rounded-xl object-cover object-center"
+        />
+      ) : (
+        <div className="rounde flex h-full w-full items-center justify-center">
+          <ImagePlusIcon className="text-muted" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export type PropertyType<T> = {
   key: string;
@@ -259,7 +276,7 @@ export const PropTypes = {
   } as PropertyType<number>,
   image: {
     key: "image",
-    icon: <RulerDimensionLineIcon />,
+    icon: <ImageIcon />,
     deserialize: (value) => value as string,
     serialize: (value) => value as string,
     component: ImagePropComponent,
@@ -341,7 +358,7 @@ export function PropertiesEditor({
         const opt = options[key];
         const Component = opt.type.component;
         return (
-          <div className="flex items-center gap-4">
+          <div key={key} className="flex items-center gap-4">
             <div className="flex w-max items-center gap-2 whitespace-nowrap">
               {opt.type.icon}
               {opt.title}

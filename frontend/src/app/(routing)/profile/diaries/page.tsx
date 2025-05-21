@@ -36,7 +36,7 @@ function DiariesList() {
   return (
     <div className="grid grid-cols-4 gap-4">
       {diaries.map((diary) => (
-        <DiaryCard diary={diary} />
+        <DiaryCard key={diary.id} diary={diary} />
       ))}
       <AddNewDiaryCard onClick={addDiary} />
     </div>

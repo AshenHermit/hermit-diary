@@ -1,7 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsBoolean, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsJSON,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { Diary } from 'src/database/entities/diary.entity';
 import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -27,6 +33,15 @@ export class UpdateDiaryDTO {
   @IsString()
   @MinLength(1)
   picture?: string;
+
+  @ApiProperty({
+    example: '{}',
+    description: 'rich text data structure',
+    required: false,
+  })
+  @IsOptional()
+  @IsJSON()
+  description?: Record<string, any>;
 }
 
 @Injectable()

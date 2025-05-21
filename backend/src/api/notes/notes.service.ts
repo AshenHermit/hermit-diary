@@ -46,12 +46,6 @@ export class UpdateNoteDTO {
   properties?: PropertiesDto['properties'];
 }
 
-export class NoteWithPropsDTO {
-  name?: string;
-  content?: Record<string, any>;
-  isPublic?: boolean;
-}
-
 @Injectable()
 export class NotesService {
   constructor(

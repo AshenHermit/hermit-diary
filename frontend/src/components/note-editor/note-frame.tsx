@@ -91,7 +91,23 @@ function NoteHeader() {
   const setEditMode = useNoteStore((state) => state.setEditMode);
   const canEdit = useNoteStore((state) => state.canEdit);
   const note = useNoteStore((state) => state.note);
+  const setNote = useNoteStore((state) => state.setNote);
   const pathname = usePathname();
+
+  const { toast } = useToast();
+  const { loading, error, handleRequest } = useRequestHandler();
+
+  const changePublic = React.useCallback(
+    (publicState: boolean) => {
+      handleRequest(async () => {
+        await updateDiaryNote({ id: note.id, isPublic: publicState });
+        let newNote = { ...note, isPublic: publicState };
+        setNote(newNote);
+        toast({ title: "Saved!", description: "note saved" });
+      });
+    },
+    [note],
+  );
 
   return (
     <div className="flex items-center justify-between">
@@ -126,12 +142,20 @@ function NoteHeader() {
               </DropdownMenuItem>
             )}
             {canEdit ? (
-              <DropdownMenuCheckboxItem
-                checked={editMode}
-                onCheckedChange={setEditMode}
-              >
-                Edit mode
-              </DropdownMenuCheckboxItem>
+              <>
+                <DropdownMenuCheckboxItem
+                  checked={editMode}
+                  onCheckedChange={setEditMode}
+                >
+                  Edit mode
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={note.isPublic}
+                  onCheckedChange={changePublic}
+                >
+                  Is Public
+                </DropdownMenuCheckboxItem>
+              </>
             ) : null}
           </DropdownMenuGroup>
         </DropdownMenuContent>
