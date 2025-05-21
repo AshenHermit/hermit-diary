@@ -15,6 +15,7 @@ import {
   TimeCircleApi,
   useCreateTimeCircleState,
 } from "@/components/visualization/time-circle/time-circle";
+import { strToDate } from "@/lib/time-utils";
 import { addDiaryNote, updateDiaryNote } from "@/services/methods/user/notes";
 import { DiaryNote } from "@/services/types/notes";
 import { useViewsStore } from "@/store/views-store";
@@ -57,6 +58,12 @@ export default function Page() {
 
   const setTimeCircleView = useViewsStore((state) => state.setTimeCircleView);
   const timeCircleState = useCreateTimeCircleState(notes);
+  const diaryAuthor = useDiaryStore((state) => state.user);
+
+  const birthDate =
+    diaryAuthor.birthday && properties.showUserAge
+      ? strToDate(diaryAuthor.birthday)
+      : undefined;
 
   return (
     <ViewContextMenu onNoteAddRequest={addNewNote}>
@@ -78,6 +85,7 @@ export default function Page() {
             ref={(api: TimeCircleApi | null) => {
               if (api) setTimeCircleView(api);
             }}
+            birthDate={birthDate}
           />
         )}
       </div>

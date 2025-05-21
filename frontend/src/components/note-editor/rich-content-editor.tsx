@@ -28,6 +28,14 @@ import { useRequestHandler } from "@/hooks/use-request-handler";
 import { useToast } from "@/hooks/use-toast";
 import { NoteReferencePlugin } from "@/components/note-editor/plugins/note-reference";
 import EventEmitter from "eventemitter3";
+import {
+  Bold,
+  CodeMark,
+  Highlight,
+  Italic,
+  Strike,
+  Underline,
+} from "@yoopta/marks";
 
 export function createYooptaEditorUnique(): YooEditor {
   // Create a unique event emitter for each editor instance
@@ -99,6 +107,8 @@ const TOOLS = {
   },
 };
 
+const MARKS = [Bold, Italic, CodeMark, Underline, Strike, Highlight];
+
 export type RichContentEditorProps = {
   readOnly?: boolean;
   defaultValue: Record<string, any> | null;
@@ -138,8 +148,24 @@ export function RichContentView({
     value: YooptaContentValue,
     options: YooptaOnChangeOptions,
   ) => {
-    console.log(options);
-    handleDebounceChange(value);
+    options.operations.forEach((op) => {
+      if (op.type == "set_block_value") {
+        const block = editor.getBlock({ id: op.id });
+        if (block?.value && block.type == "Paragraph") {
+          if (block.value.length > 1) {
+            const newValue = block.value.map((val, idx) => ({ ...val }));
+            newValue.reverse().forEach((val) => {
+              editor.insertBlock("Paragraph", {
+                at: editor.path.current,
+                blockData: { value: [val] as any },
+              });
+            });
+            editor.deleteBlock({ blockId: block.id });
+          }
+        }
+      }
+    });
+    if (options.operations) handleDebounceChange(value);
     setValue(value);
   };
 
@@ -151,6 +177,7 @@ export function RichContentView({
         plugins={plugins}
         tools={TOOLS}
         value={value}
+        marks={MARKS}
         selectionBoxRoot={selectionRef}
         onChange={onChange}
         className={className}

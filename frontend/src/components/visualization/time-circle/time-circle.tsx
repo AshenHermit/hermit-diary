@@ -305,6 +305,14 @@ function positionToYear(pos: number, startYear: number) {
 function positionToMonth(pos: number) {
   return mod(Math.floor(pos), 12);
 }
+function positionToAge(pos: number, startYear: number, birthDate: Date) {
+  let shiftedPos = pos;
+  shiftedPos -= birthDate.getMonth();
+  shiftedPos -= birthDate.getDate() / 30;
+  let year = positionToYear(shiftedPos, startYear);
+  year -= birthDate.getFullYear();
+  return year;
+}
 
 function TimeDisplay({
   state,
@@ -317,10 +325,13 @@ function TimeDisplay({
 }) {
   const [year, setYear] = React.useState(0);
   const [month, setMonth] = React.useState(0);
+  const [age, setAge] = React.useState(0);
 
   useLayerAnimation(
     (frame) => {
       setYear(positionToYear(state.current.viewPosition, zeroYear));
+      if (birthDate)
+        setAge(positionToAge(state.current.viewPosition, zeroYear, birthDate));
       setMonth(positionToMonth(state.current.viewPosition));
     },
     [zeroYear],
@@ -330,6 +341,7 @@ function TimeDisplay({
     <div className="flex flex-col items-center gap-2 text-foreground/70">
       <div className="text-3xl font-bold">{year}</div>
       <div className="font-semibold">{monthsTitles[month]}</div>
+      {birthDate ? <div className="font-semibold">age: {age}</div> : null}
     </div>
   );
 }
