@@ -15,9 +15,11 @@ export type DiaryProperties = {
   accentColor?: string;
   backgroundImage?: string;
   coverImage?: string;
+  showUserAge?: boolean;
 };
 
 export const defaultDiaryProperties: DiaryProperties = {
   accentColor: "#ffac59",
   backgroundImage: "/textures/bg.png",
+  showUserAge: false,
 };

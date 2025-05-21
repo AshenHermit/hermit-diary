@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import {
   ValueScroller,
   ValueScrollerProps,
@@ -44,6 +45,7 @@ import {
   ImageIcon,
   ImagePlusIcon,
   PaletteIcon,
+  PowerIcon,
   RulerDimensionLineIcon,
   XIcon,
 } from "lucide-react";
@@ -154,6 +156,23 @@ export const SliderPropComponent: React.FC<
         <div>{value}</div>
       ) : (
         <ValueScroller value={value} onValueChange={onValueChange} {...props} />
+      )}
+    </div>
+  );
+};
+
+export const BooleanPropComponent: React.FC<PropComponentProps<boolean>> = ({
+  type,
+  value,
+  onValueChange,
+  readOnly,
+}) => {
+  return (
+    <div className="flex h-full items-center">
+      {readOnly ? (
+        <Switch checked={value} disabled />
+      ) : (
+        <Switch checked={value} onCheckedChange={onValueChange} />
       )}
     </div>
   );
@@ -281,6 +300,13 @@ export const PropTypes = {
     serialize: (value) => value as string,
     component: ImagePropComponent,
   } as PropertyType<string>,
+  bool: {
+    key: "bool",
+    icon: <PowerIcon />,
+    deserialize: (value) => value as boolean,
+    serialize: (value) => value as boolean,
+    component: BooleanPropComponent,
+  } as PropertyType<boolean>,
 };
 
 export const TestOptions = {
@@ -358,7 +384,7 @@ export function PropertiesEditor({
         const opt = options[key];
         const Component = opt.type.component;
         return (
-          <div key={key} className="flex items-center gap-4">
+          <div key={key} className="grid grid-cols-[1fr_1fr_auto] gap-4">
             <div className="flex w-max items-center gap-2 whitespace-nowrap">
               {opt.type.icon}
               {opt.title}
@@ -373,11 +399,13 @@ export function PropertiesEditor({
                 {...opt.props}
               />
             </div>
-            <div>
-              <Button variant="ghost" onClick={() => deleteProp(key)}>
-                <XIcon />
-              </Button>
-            </div>
+            {editMode ? (
+              <div>
+                <Button variant="ghost" onClick={() => deleteProp(key)}>
+                  <XIcon />
+                </Button>
+              </div>
+            ) : null}
           </div>
         );
       })}

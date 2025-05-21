@@ -132,7 +132,7 @@ export function SelectedNotePanel() {
             <AccordionTrigger>
               <BoltIcon /> Properties
             </AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-2 pt-2">
+            <AccordionContent className="flex flex-col gap-2">
               <PropertiesSection
                 note={selectedNote}
                 forceUpdate={forceUpdate}

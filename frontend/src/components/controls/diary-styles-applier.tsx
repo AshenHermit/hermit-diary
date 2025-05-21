@@ -16,6 +16,7 @@ export function DiaryStylesApplier({
     accentColor: "--accent-color",
     backgroundImage: "--bg-image",
     coverImage: null,
+    showUserAge: null,
   };
 
   React.useEffect(() => {

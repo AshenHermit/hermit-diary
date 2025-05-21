@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  InternalServerErrorException,
   Param,
   Post,
   Res,
@@ -17,7 +18,7 @@ import {
   ApiOkResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { createReadStream } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 import { join } from 'path';
 import { Response } from 'express';
 import { AppConfigService } from 'src/config/config.service';
@@ -33,7 +34,11 @@ export class UploadsController {
   streamFile(@Param('filename') filename: string, @Res() res: Response) {
     let filepath = join(this.config.storage.dir, filename);
     if (filepath.startsWith('.')) filepath = join(process.cwd(), filepath);
-    const file = createReadStream(filepath);
-    file.pipe(res);
+    if (existsSync(filepath)) {
+      const file = createReadStream(filepath);
+      file.pipe(res);
+    } else {
+      throw new InternalServerErrorException();
+    }
   }
 }

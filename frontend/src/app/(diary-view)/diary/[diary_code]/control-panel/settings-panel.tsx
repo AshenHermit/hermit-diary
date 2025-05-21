@@ -260,6 +260,13 @@ const DiaryPropsOptions: Record<keyof DiaryProperties, OptionSchema<any>> = {
     type: PropTypes.image,
     default: defaultDiaryProperties.coverImage,
   },
+  showUserAge: {
+    title: "Show user age",
+    description: "Age will be showing on time circle",
+    key: "showUserAge",
+    type: PropTypes.bool,
+    default: defaultDiaryProperties.showUserAge,
+  },
 };
 
 function PropertiesSection() {
