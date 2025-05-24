@@ -90,6 +90,10 @@ export function StageView({
       state.lastXPos = touch.clientX;
       state.lastYPos = touch.clientY;
     };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length == 0) return;
+      state.dragButtonPressed = false;
+    };
     const onTouchMove = (e: TouchEvent) => {
       if (e.touches.length == 0) return;
       const touch = e.touches[0];
@@ -104,6 +108,8 @@ export function StageView({
     containerRef.current.addEventListener("touchstart", onTouchStart);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchend", onTouchEnd);
+    window.addEventListener("touchcancel", onTouchEnd);
     window.addEventListener("touchmove", onTouchMove);
 
     return () => {
@@ -113,6 +119,8 @@ export function StageView({
       }
       window.removeEventListener("mouseup", onUp);
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
       window.removeEventListener("touchmove", onTouchMove);
     };
   }, []);
