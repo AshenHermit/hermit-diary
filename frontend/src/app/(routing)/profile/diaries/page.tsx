@@ -65,7 +65,7 @@ function DiaryCard({
             height={200}
             width={200}
             alt={diary.name}
-            className="h-full min-h-0 object-cover"
+            className="h-full min-h-0 w-full object-cover"
           />
         ) : (
           <div className="flex cursor-pointer items-center justify-center bg-sidebar">
