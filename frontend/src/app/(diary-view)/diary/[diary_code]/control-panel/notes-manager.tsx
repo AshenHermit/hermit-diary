@@ -91,6 +91,8 @@ function buildTree(items: DiaryNote[]): TreeItem[] {
       const parent = lookup[item.parentNoteId];
       if (parent) {
         parent.children.push(lookup[item.id]);
+      } else {
+        roots.push(lookup[item.id]);
       }
     }
   }
@@ -126,7 +128,11 @@ export function NoteTree({
   level: number;
 }) {
   return treeItems.map((treeItem) => (
-    <TreeItemComponent key={treeItem.id} level={level} treeItem={treeItem} />
+    <TreeItemComponent
+      key={treeItem.id + " " + treeItems.length}
+      level={level}
+      treeItem={treeItem}
+    />
   ));
 }
 
@@ -184,7 +190,10 @@ function useReparentNote() {
       if (toNote.id == note.id) return;
       if (toNote.getParentIds().indexOf(note.id) != -1) return;
     }
-    notes.filter((x) => x.id == note.id)[0].parentNoteId = toNoteId;
+    console.log(notes);
+    const actualNote = notes.filter((x) => x.id == note.id)[0];
+    console.log(actualNote);
+    actualNote.parentNoteId = toNoteId;
 
     forceUpdateNotes(notes);
     handleRequest(async () => {
