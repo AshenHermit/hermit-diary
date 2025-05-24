@@ -60,14 +60,13 @@ function DiaryCard({
     <Link href={makeLinkToDiary(diary.id)}>
       <div className="grid h-[200px] grid-rows-[1fr_auto] overflow-hidden rounded-2xl bg-muted transition-all hover:scale-105">
         {picture ? (
-          <div className="h-full">
-            <Image
-              src={picture}
-              fill
-              alt={diary.name}
-              className="h-full object-cover"
-            />
-          </div>
+          <Image
+            src={picture}
+            height={200}
+            width={200}
+            alt={diary.name}
+            className="h-full min-h-0 object-cover"
+          />
         ) : (
           <div className="flex cursor-pointer items-center justify-center bg-sidebar">
             <CircleDotDashed />
