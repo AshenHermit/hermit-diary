@@ -52,7 +52,7 @@ export function SidebarProfileLayout({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <SidebarProvider className="grid h-full min-h-0 grid-cols-[auto_1fr] overflow-hidden rounded-3xl">
+    <SidebarProvider className="grid h-full min-h-0 grid-cols-1 overflow-hidden rounded-3xl md:grid-cols-[auto_1fr]">
       <Sidebar
         variant="sidebar"
         collapsible="icon"
@@ -94,11 +94,11 @@ export function SidebarProfileLayout({ children }: React.PropsWithChildren) {
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
-      <SidebarInset className="glass grid grid-rows-[auto_1fr] bg-transparent">
+      <SidebarInset className="glass grid !w-full grid-rows-[auto_1fr] bg-transparent">
         <div>
           <SidebarTrigger className="p-6" />
         </div>
-        <main className="min-h-full">{children}</main>
+        <main className="min-h-full w-full">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

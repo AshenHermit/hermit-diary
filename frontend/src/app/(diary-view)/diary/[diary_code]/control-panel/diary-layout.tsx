@@ -100,14 +100,14 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
   );
 
   return (
-    <div className="grid h-full min-h-0 grid-cols-[auto_auto_1fr] overflow-hidden">
+    <div className="grid h-full max-md:grid-rows-[1fr_auto_auto] md:grid-cols-[auto_auto_1fr]">
       <DiaryStylesApplier properties={properties} />
       <Suspense>
         <SelectedNoteLoader />
         <TabSelector />
         <SearchParamsSetter />
       </Suspense>
-      <div className="flex flex-col bg-sidebar">
+      <div className="flex flex-row bg-sidebar max-md:z-40 max-md:order-3 max-md:justify-center md:w-fit md:flex-col">
         {availableTabs.map((tab) => (
           <div key={tab.key} className="w-[3.5rem]">
             <TabButton
@@ -119,20 +119,25 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
           </div>
         ))}
       </div>
-      <main className="grid h-0 min-h-full grid-cols-[auto_1fr]">
+      <main
+        className={classNames(
+          "grid h-0 min-h-full max-md:order-2 max-md:grid-cols-1 max-md:grid-rows-[auto_1fr] md:grid-cols-[auto_1fr]",
+          { "max-md:!h-[50vh]": isOpen },
+        )}
+      >
         <div
           className={classNames(
-            "overflow-x-hidden bg-background transition-all",
+            "overflow-x-hidden bg-background transition-all max-md:order-2",
             {
-              "w-[500px]": isOpen,
-              "w-0": !isOpen,
+              "h-[full] md:w-[500px]": isOpen,
+              "h-0 w-0": !isOpen,
             },
           )}
         >
           {availableTabs.map((tab) => (
             <div
               key={tab.key}
-              className={classNames("h-full max-h-full overflow-y-auto", {
+              className={classNames("h-full overflow-y-auto", {
                 "sr-only hidden": selectedTabData?.key != tab.key,
               })}
             >
@@ -140,8 +145,8 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
             </div>
           ))}
         </div>
-        <div className="relative">
-          <div className="absolute left-0 top-0 z-10 flex gap-4">
+        <div className="relative max-md:order-1">
+          <div className="left-0 z-10 flex gap-4 max-md:bottom-0 md:absolute md:top-0">
             <Button
               variant={"ghost"}
               className="h-10 w-10 p-2"
@@ -162,7 +167,7 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
           </div>
         </div>
       </main>
-      {children}
+      <div className="max-md:order-1 max-md:h-full">{children}</div>
     </div>
   );
 }
@@ -205,12 +210,12 @@ function TabButton({
       className={classNames(
         "relative z-10 h-[3.5rem] max-w-[3.5rem] justify-start gap-4 overflow-hidden p-4 transition-all",
         { "hover:max-w-48 hover:rounded-md": canUnfold },
-        { "rounded-e-none": active },
+        { "max-md:rounded-t-none md:rounded-e-none": active },
         { "bg-background": active },
       )}
     >
       <tab.icon className="!size-6" />
-      {tab.name}
+      <span className="max-md:hidden">{tab.name}</span>
     </Button>
   );
 }

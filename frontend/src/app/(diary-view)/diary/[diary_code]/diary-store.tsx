@@ -26,7 +26,7 @@ export type DiaryProps = Diary & {
   loaded: boolean;
   loadDiary: (diaryId: number) => Promise<void>;
   loadNotes: () => Promise<void>;
-  forceUpdateNotes: () => void;
+  forceUpdateNotes: (notes?: DiaryNote[]) => void;
   loadProperties: () => Promise<void>;
   currentTab: TabKey;
   setCurrentTab: (key: TabKey) => void;
@@ -68,7 +68,11 @@ const createDiaryStore = () => {
       setCurrentView(view) {
         set({ currentView: view });
       },
-      forceUpdateNotes() {
+      forceUpdateNotes(notes) {
+        if (notes) {
+          set({ notes: [...notes] });
+          return;
+        }
         set({ notes: [...get().notes] });
       },
       async loadDiary(diaryId) {

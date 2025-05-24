@@ -6,7 +6,16 @@ import {
   ConfirmDialog,
   ConfirmDialogApi,
 } from "@/components/controls/confirmation-dialog";
+import {
+  DragItem,
+  DragItemsContainer,
+} from "@/components/controls/drag-items-list";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -22,9 +31,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRequestHandler } from "@/hooks/use-request-handler";
-import { addDiaryNote, deleteDiaryNote } from "@/services/methods/user/notes";
+import {
+  addDiaryNote,
+  deleteDiaryNote,
+  updateDiaryNote,
+} from "@/services/methods/user/notes";
 import { DiaryNote } from "@/services/types/notes";
 import {
+  ChevronsUpDownIcon,
   CirclePlusIcon,
   EyeOffIcon,
   MousePointer2Icon,
@@ -33,22 +47,158 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
+type TreeItem = DiaryNote & {
+  children: TreeItem[];
+  getParentIds: () => number[];
+  origNote: DiaryNote;
+};
+
+function buildTree(items: DiaryNote[]): TreeItem[] {
+  const lookup: Record<number, TreeItem> = {};
+  const roots: TreeItem[] = [];
+
+  const getParentIds = (itemId: number) => {
+    if (lookup[itemId].parentNoteId === null) return [];
+
+    let parentId = lookup[itemId].parentNoteId;
+    const ids = [];
+
+    for (let i = 0; i < 20; i++) {
+      ids.push(parentId);
+      let parent = lookup[parentId];
+      if (parent.parentNoteId !== null) {
+        parentId = parent.parentNoteId;
+      } else {
+        break;
+      }
+    }
+    return ids;
+  };
+
+  for (const item of items) {
+    lookup[item.id] = {
+      ...item,
+      origNote: item,
+      children: [],
+      getParentIds: () => getParentIds(item.id),
+    };
+  }
+
+  for (const item of items) {
+    if (item.parentNoteId === null) {
+      roots.push(lookup[item.id]);
+    } else {
+      const parent = lookup[item.parentNoteId];
+      if (parent) {
+        parent.children.push(lookup[item.id]);
+      }
+    }
+  }
+
+  return roots;
+}
+
 export function NotesManager() {
   const notes = useDiaryStore((state) => state.notes);
+  const treeRoots = buildTree(notes);
+
   return (
     <DiaryTabPanel className="h-full">
       <div className="text-lg font-semibold">Notes</div>
       <div className="flex h-full flex-col justify-stretch gap-1">
-        {notes.map((note) => (
-          <NoteItem note={note} key={note.id} />
-        ))}
-        <FreeSpaceArea />
+        <DragItemsContainer>
+          <NoteTree treeItems={treeRoots} level={0} />
+          {/* {notes.map((note) => (
+            <NoteItem note={note} key={note.id} />
+          ))} */}
+          <FreeSpaceArea />
+        </DragItemsContainer>
       </div>
     </DiaryTabPanel>
   );
 }
 
-function NoteItem({ note }: { note: DiaryNote }) {
+export function NoteTree({
+  treeItems,
+  level,
+}: {
+  treeItems: TreeItem[];
+  level: number;
+}) {
+  return treeItems.map((treeItem) => (
+    <TreeItemComponent key={treeItem.id} level={level} treeItem={treeItem} />
+  ));
+}
+
+function TreeItemComponent({
+  treeItem,
+  level,
+}: {
+  treeItem: TreeItem;
+  level: number;
+}) {
+  const itemRef = React.useRef<HTMLDivElement>(null);
+  const reparentNote = useReparentNote();
+
+  return (
+    <div
+      className="flex flex-col justify-stretch gap-1"
+      key={treeItem.id}
+      ref={itemRef}
+    >
+      <Collapsible className="w-[350px]">
+        <DragItem
+          data={treeItem}
+          onDataDropped={(data) => reparentNote(data, treeItem)}
+          itemRef={itemRef}
+        >
+          <NoteItem note={treeItem} style={{ marginLeft: level * 2 + "rem" }} />
+        </DragItem>
+        {treeItem.children.length > 0 ? (
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <ChevronsUpDownIcon className="h-4 w-4" />
+              <span className="sr-only">Toggle</span>
+            </Button>
+          </CollapsibleTrigger>
+        ) : null}
+        <CollapsibleContent className="flex flex-col justify-stretch gap-1">
+          {treeItem.children.length > 0 ? (
+            <NoteTree level={level + 1} treeItems={treeItem.children} />
+          ) : null}
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
+  );
+}
+
+function useReparentNote() {
+  const notes = useDiaryStore((state) => state.notes);
+  const loadNotes = useDiaryStore((state) => state.loadNotes);
+  const forceUpdateNotes = useDiaryStore((state) => state.forceUpdateNotes);
+  const { loading, error, handleRequest } = useRequestHandler();
+
+  const reparentNote = (note: TreeItem, toNote: TreeItem | null) => {
+    const toNoteId = toNote ? toNote.id : null;
+    if (toNote !== null) {
+      if (toNote.id == note.id) return;
+      if (toNote.getParentIds().indexOf(note.id) != -1) return;
+    }
+    notes.filter((x) => x.id == note.id)[0].parentNoteId = toNoteId;
+
+    forceUpdateNotes(notes);
+    handleRequest(async () => {
+      await updateDiaryNote({ id: note.id, parentNoteId: toNoteId });
+    });
+  };
+
+  return reparentNote;
+}
+
+function NoteItem({
+  note,
+  ...props
+}: { note: TreeItem } & React.ComponentProps<"button">) {
   const deletionDialogApi = React.useRef<ConfirmDialogApi>(null);
 
   const loadNotes = useDiaryStore((state) => state.loadNotes);
@@ -86,8 +236,9 @@ function NoteItem({ note }: { note: DiaryNote }) {
         <ContextMenuTrigger>
           <Button
             variant={"outline"}
-            className={"w-full justify-between"}
+            className={"justify-between"}
             onClick={onClick}
+            {...props}
           >
             {note.name}
             <div className="flex gap-2">
@@ -121,9 +272,17 @@ function FreeSpaceArea() {
     await loadNotes();
   }, [loadNotes, diaryId]);
 
+  const reparentNote = useReparentNote();
+
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="flex h-full min-h-24 items-center justify-center rounded-xl bg-black"></ContextMenuTrigger>
+      <DragItem
+        data={null}
+        draggable={false}
+        onDataDropped={(data) => reparentNote(data, null)}
+      >
+        <ContextMenuTrigger className="flex h-full min-h-24 items-center justify-center rounded-xl bg-black"></ContextMenuTrigger>
+      </DragItem>
       <ContextMenuContent>
         <ContextMenuItem className="cursor-pointer gap-2" onClick={addNewNote}>
           <CirclePlusIcon width={16} />

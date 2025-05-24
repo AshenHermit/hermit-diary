@@ -54,7 +54,7 @@ export default function Page() {
           <HorizontalDivider>Profile picture</HorizontalDivider>
           <ProfilePictureEditor />
           <HorizontalDivider>Info</HorizontalDivider>
-          <div className="grid h-full grid-cols-[1fr_1px_1fr] gap-4">
+          <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-[1fr_1px_1fr]">
             <PersonalInfoEditor />
             <div className="bg-muted"></div>
             <SocialLinksEditor />

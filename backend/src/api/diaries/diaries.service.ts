@@ -11,6 +11,7 @@ import {
 import { Diary } from 'src/database/entities/diary.entity';
 import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
+import { PropertiesService } from '../properties/properties.service';
 
 export class UpdateDiaryDTO {
   @ApiProperty({ example: 'Untitled', description: 'name', required: false })
@@ -48,6 +49,7 @@ export class UpdateDiaryDTO {
 export class DiariesService {
   constructor(
     @InjectRepository(Diary) private diariesRepository: Repository<Diary>,
+    private propertiesService: PropertiesService,
   ) {}
 
   async assertDiaryWriteAccess(user: User, diary: Diary) {
@@ -73,6 +75,18 @@ export class DiariesService {
     const diaries = await this.diariesRepository.find({
       where: { user: { id: userId }, isPublic: onlyPublic ? true : undefined },
     });
+
+    const props = await this.propertiesService.getPropertiesForMultipleTargets(
+      'diary',
+      diaries.map((x) => x.id),
+    );
+    for (let i = 0; i < diaries.length; i++) {
+      const diary = diaries[i];
+      const properties = props[diary.id].properties;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (diary as any).properties = properties;
+    }
+
     return diaries;
   }
 

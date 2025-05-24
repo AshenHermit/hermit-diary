@@ -12,6 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsJSON,
+  IsNumber,
   IsOptional,
   IsString,
   MinLength,
@@ -42,6 +43,11 @@ export class UpdateNoteDTO {
   @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
+
+  @ApiProperty({ example: 'null', required: false })
+  @IsOptional()
+  @IsNumber()
+  parentNoteId?: number;
 
   properties?: PropertiesDto['properties'];
 }
