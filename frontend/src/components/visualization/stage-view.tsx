@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayerAnimation } from "@/hooks/use-animation-frame";
+import { useCheckMobileScreen } from "@/lib/use-is-mobile";
 import Konva from "konva";
 import React from "react";
 import { Stage } from "react-konva";
@@ -21,10 +22,15 @@ export function StageView({
   dragMouseButton = 1,
   zoom = true,
 }: StageViewProps) {
+  const isMobile = useCheckMobileScreen();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const stageRef = React.useRef<Konva.Stage>(null);
 
-  const stageTransformTarget = React.useRef({ x: 0, y: 0, scale: 1 });
+  const stageTransformTarget = React.useRef({
+    x: 0,
+    y: 0,
+    scale: isMobile ? 0.5 : 1,
+  });
 
   React.useEffect(() => {
     if (!stageRef.current) return;
@@ -53,7 +59,7 @@ export function StageView({
   React.useEffect(() => {
     if (!containerRef.current) return;
 
-    const state = { dragButtonPressed: false };
+    const state = { dragButtonPressed: false, lastXPos: 0, lastYPos: 0 };
     const onDown = (e: MouseEvent) => {
       if (e.button == dragMouseButton) {
         state.dragButtonPressed = true;
@@ -64,25 +70,51 @@ export function StageView({
         state.dragButtonPressed = false;
       }
     };
+    const drag = (movementX: number, movementY: number) => {
+      movementX /= 2;
+      movementY /= 2;
+      if (onDrag) onDrag(movementX, movementY);
+      if (canMoveStage) {
+        stageTransformTarget.current.x += movementX;
+        stageTransformTarget.current.y += movementY;
+      }
+    };
     const onMove = (e: MouseEvent) => {
       if (state.dragButtonPressed) {
-        if (onDrag) onDrag(e.movementX, e.movementY);
-        if (canMoveStage) {
-          stageTransformTarget.current.x += e.movementX;
-          stageTransformTarget.current.y += e.movementY;
-        }
+        drag(e.movementX, e.movementY);
+      }
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length == 0) return;
+      state.dragButtonPressed = true;
+      const touch = e.touches[0];
+      state.lastXPos = touch.clientX;
+      state.lastYPos = touch.clientY;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length == 0) return;
+      const touch = e.touches[0];
+      if (state.dragButtonPressed) {
+        drag(touch.clientX - state.lastXPos, touch.clientY - state.lastYPos);
+        state.lastXPos = touch.clientX;
+        state.lastYPos = touch.clientY;
       }
     };
 
     containerRef.current.addEventListener("mousedown", onDown);
+    containerRef.current.addEventListener("touchstart", onTouchStart);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onTouchMove);
 
     return () => {
       if (!containerRef.current) return;
       containerRef.current.removeEventListener("mousedown", onDown);
+      containerRef.current.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("mouseup", onUp);
-      window.addEventListener("mousemove", onMove);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onTouchMove);
     };
   }, []);
 

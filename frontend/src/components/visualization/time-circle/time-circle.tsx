@@ -42,6 +42,10 @@ export type NotesCircleProps = {
   state: NoteCircleStateRef;
 };
 
+function getCircleRadius(stage: Konva.Stage) {
+  return (stage.height() * 0.3) / stage.scale().x;
+}
+
 export function useCreateTimeCircleState(notes: DiaryNote[]) {
   const dataRef = React.useRef<NoteCircleState>({
     slowViewPosition: 0,
@@ -181,7 +185,7 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
         if (!state.current) return;
         const stage = node.getStage();
         if (!stage) return;
-        const radius = stage.height() * 0.3;
+        const radius = getCircleRadius(stage);
 
         const viewPosition = state.current.slowViewPosition;
         const position = node.note.properties.timePosition;
@@ -358,7 +362,7 @@ function MonthsArc({ data }: { data: NoteCircleStateRef }) {
     if (!data.current) return;
     const stage = shape.getStage();
     if (!stage) return;
-    const radius = stage.height() * 0.3;
+    const radius = getCircleRadius(stage);
 
     for (let i = 0; i < 12; i++) {
       var month_angle = (2 * Math.PI) / 12;
@@ -396,7 +400,7 @@ function CursorLine({ data }: { data: NoteCircleStateRef }) {
     if (!data.current) return;
     const stage = shape.getStage();
     if (!stage) return;
-    const radius = stage.height() * 0.3;
+    const radius = getCircleRadius(stage);
 
     var angle = postPositionToAngle(data.current.slowViewPosition);
 

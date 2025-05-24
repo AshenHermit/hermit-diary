@@ -6,6 +6,7 @@ export type NoteBase = {
   updatedAt: string;
   name: string;
   isPublic: boolean;
+  parentNoteId: number | null;
   properties: NoteProperties;
 };
 

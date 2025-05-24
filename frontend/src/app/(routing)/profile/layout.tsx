@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 export default function ProfileLayout({ children }: React.PropsWithChildren) {
   return (
-    <div className="mx-auto h-full max-w-[1300px] py-4">
+    <div className="mx-auto h-full w-full md:max-w-[1300px] md:py-4">
       <ProfileRedirectComponent />
       <Suspense>
         <SidebarProfileLayout>{children}</SidebarProfileLayout>

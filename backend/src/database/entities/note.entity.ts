@@ -50,6 +50,12 @@ export class Note {
   @Column({ nullable: true, default: null, type: 'jsonb', select: false })
   content: Record<string, any>;
 
+  @ApiProperty({
+    description: 'parent note id, like file in folder',
+  })
+  @Column({ nullable: true, default: null })
+  parentNoteId: number;
+
   @ManyToOne(() => Diary, (diary) => diary.notes, { onDelete: 'CASCADE' })
   diary: Diary;
 

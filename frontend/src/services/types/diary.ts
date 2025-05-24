@@ -9,6 +9,7 @@ export type Diary = {
   isPublic: boolean;
   user: GlobalUser;
   description: Record<string, any> | null;
+  properties?: DiaryProperties;
 };
 
 export type DiaryProperties = {

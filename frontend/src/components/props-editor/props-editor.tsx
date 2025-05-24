@@ -384,7 +384,7 @@ export function PropertiesEditor({
         const opt = options[key];
         const Component = opt.type.component;
         return (
-          <div key={key} className="grid grid-cols-[1fr_1fr_auto] gap-4">
+          <div key={key} className="grid grid-cols-[1.5fr_1fr_auto] gap-4">
             <div className="flex w-max items-center gap-2 whitespace-nowrap">
               {opt.type.icon}
               {opt.title}
