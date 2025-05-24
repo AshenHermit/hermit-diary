@@ -71,8 +71,6 @@ export function StageView({
       }
     };
     const drag = (movementX: number, movementY: number) => {
-      movementX /= 2;
-      movementY /= 2;
       if (onDrag) onDrag(movementX, movementY);
       if (canMoveStage) {
         stageTransformTarget.current.x += movementX;
@@ -109,9 +107,10 @@ export function StageView({
     window.addEventListener("touchmove", onTouchMove);
 
     return () => {
-      if (!containerRef.current) return;
-      containerRef.current.removeEventListener("mousedown", onDown);
-      containerRef.current.removeEventListener("touchstart", onTouchStart);
+      if (containerRef.current) {
+        containerRef.current.removeEventListener("mousedown", onDown);
+        containerRef.current.removeEventListener("touchstart", onTouchStart);
+      }
       window.removeEventListener("mouseup", onUp);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("touchmove", onTouchMove);
