@@ -91,7 +91,6 @@ export function StageView({
       state.lastYPos = touch.clientY;
     };
     const onTouchEnd = (e: TouchEvent) => {
-      if (e.touches.length == 0) return;
       state.dragButtonPressed = false;
     };
     const onTouchMove = (e: TouchEvent) => {
