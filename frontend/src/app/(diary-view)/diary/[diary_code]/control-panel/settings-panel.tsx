@@ -6,7 +6,7 @@ import {
   ConfirmDialog,
   ConfirmDialogApi,
 } from "@/components/controls/confirmation-dialog";
-import { RichContentView } from "@/components/note-editor/rich-content-editor";
+import { RichContentEditor } from "@/components/note-editor/dynamic-rich-content-editor";
 import {
   OptionSchema,
   PropertiesEditor,
@@ -51,6 +51,7 @@ import {
   Diary,
   DiaryProperties,
 } from "@/services/types/diary";
+import { RichContentData } from "@/services/types/notes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import debounce from "just-debounce-it";
 import {
@@ -314,7 +315,7 @@ export function DiaryDescriptionEditor({ readOnly }: { readOnly?: boolean }) {
   const writePermission = useDiaryStore((state) => state.writePermission);
 
   const handleDebouncedSave = React.useCallback(
-    async (data: Record<string, any>) => {
+    async (data: RichContentData) => {
       let updateData = { id: diaryId, description: data };
       await updateDiary(updateData);
       loadDiary(diaryId);
@@ -323,7 +324,7 @@ export function DiaryDescriptionEditor({ readOnly }: { readOnly?: boolean }) {
   );
 
   return (
-    <RichContentView
+    <RichContentEditor
       readOnly={!writePermission}
       defaultValue={actualDescription}
       onDebouncedSave={handleDebouncedSave}

@@ -1,3 +1,4 @@
+import { RichContentData } from "@/services/types/notes";
 import { GlobalUser } from "@/services/types/user";
 
 export type Diary = {
@@ -8,7 +9,7 @@ export type Diary = {
   picture: string;
   isPublic: boolean;
   user: GlobalUser;
-  description: Record<string, any> | null;
+  description: RichContentData | null;
   properties?: DiaryProperties;
 };
 

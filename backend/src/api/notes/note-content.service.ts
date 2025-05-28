@@ -5,37 +5,41 @@ import { User } from 'src/database/entities/user.entity';
 import { Brackets, Repository } from 'typeorm';
 import { Diary } from 'src/database/entities/diary.entity';
 
+type ContentBlock = Record<string, any>;
+
 @Injectable()
 export class NoteContentService {
   constructor(
     @InjectRepository(Note) private notesRepository: Repository<Note>,
   ) {}
 
-  async getAllNodes(content: Record<string, any>) {
-    const nodes: Record<string, any>[] = [];
-    Object.keys(content).forEach((key) => {
-      const block: Record<string, any> = content[key] as Record<string, any>;
-      const values: Record<string, any>[] = block.value as Record<
-        string,
-        any
-      >[];
+  getNodesInBlocks(blocks: ContentBlock[]) {
+    let collectedBlocks: ContentBlock[] = [];
+    for (const block of blocks) {
+      collectedBlocks.push(block);
+      collectedBlocks = [
+        ...collectedBlocks,
+        ...this.getNodesInBlocks(block.children),
+      ];
+    }
+    return collectedBlocks;
+  }
 
-      values.forEach((value) => {
-        nodes.push(value);
-      });
-    });
-    return nodes;
+  async getAllBlocks(content: Record<string, any>) {
+    const blocks = this.getNodesInBlocks(content.blocks);
+    return blocks;
   }
 
   async findOutcomingLinks(content: Record<string, any>) {
     const links: Note[] = [];
-    const nodes = await this.getAllNodes(content);
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      if (node.type == 'note-reference') {
-        const props = node.props as Record<string, any>;
+    const blocks = await this.getAllBlocks(content);
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i];
+      if (block.type == 'noteReference') {
+        const props = block.props as Record<string, any>;
         if (props.note) {
-          const linkNoteId = (props.note as Record<string, any>).id as number;
+          const noteProp = JSON.parse(props.note) as Record<string, any>;
+          const linkNoteId = noteProp.id as number;
           const note = await this.notesRepository.findOne({
             where: { id: linkNoteId },
           });
@@ -50,13 +54,13 @@ export class NoteContentService {
 
   async updateOutcomingLinks(content: Record<string, any>) {
     const links: Note[] = [];
-    const nodes = await this.getAllNodes(content);
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      if (node.type == 'note-reference') {
-        const props = node.props as Record<string, any>;
+    const blocks = await this.getAllBlocks(content);
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i];
+      if (block.type == 'noteReference') {
+        const props = block.props as Record<string, any>;
         if (props.note) {
-          const noteProp = props.note as Record<string, any>;
+          const noteProp = JSON.parse(props.note) as Record<string, any>;
           const linkNoteId = noteProp.id as number;
           const note = await this.notesRepository.findOne({
             where: { id: linkNoteId },
