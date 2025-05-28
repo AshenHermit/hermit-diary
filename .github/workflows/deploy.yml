@@ -12,6 +12,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Remove old staff
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_DIR }}
+            rm -r frontend
+            rm -r backend
+
       - name: Copy files via SSH
         uses: appleboy/scp-action@v1
         with:
