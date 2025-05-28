@@ -43,7 +43,7 @@ export type NotesCircleProps = {
 };
 
 function getCircleRadius(stage: Konva.Stage) {
-  return (stage.height() * 0.3) / stage.scale().x;
+  return (Math.min(stage.height(), stage.width()) * 0.3) / stage.scale().x;
 }
 
 export function useCreateTimeCircleState(notes: DiaryNote[]) {

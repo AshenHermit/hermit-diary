@@ -70,6 +70,10 @@
     .yoopta-divider hr {
       border-color: rgb(84 84 84) !important;
     }
+
+    .bn-editor {
+      background-color: transparent;
+    }
   }
 }
 

@@ -22,8 +22,12 @@ export type GlobalNote = DiaryNote & {
   diary: Diary;
 };
 
+export type RichContentData = {
+  blocks: Record<string, any>[];
+};
+
 export type VerboseNote = GlobalNote & {
-  content: Record<string, any>;
+  content: RichContentData;
 };
 
 export type NoteProperties = {

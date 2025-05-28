@@ -27,7 +27,7 @@ export function NotePicker({
   onValueChange,
   openIfNoValue,
 }: {
-  diaryId: number;
+  diaryId?: number;
   value: DiaryNote | null;
   onValueChange: (note: DiaryNote) => void;
   openIfNoValue?: boolean;
@@ -36,6 +36,7 @@ export function NotePicker({
   const [notes, setNotes] = React.useState<DiaryNote[]>([]);
 
   const loadNotes = React.useCallback(async () => {
+    if (!diaryId) return;
     const fetchedNotes = await getDiaryNotes(diaryId);
     setNotes(fetchedNotes);
   }, []);
@@ -48,7 +49,7 @@ export function NotePicker({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="flex w-[200px] items-center justify-between p-2">
+      <PopoverTrigger className="flex w-[200px] items-center justify-between bg-secondary p-2">
         {value ? value.name : "Select note..."}
         <ChevronsUpDown />
       </PopoverTrigger>

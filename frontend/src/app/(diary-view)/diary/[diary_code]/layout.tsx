@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/header";
 
 export default async function Layout({ children }: React.PropsWithChildren) {
   return (
-    <div className="grid h-[100vh] max-h-[100vh] grid-rows-[auto_1fr]">
+    <div className="grid h-[100dvh] max-h-[100dvh] grid-rows-[auto_1fr]">
       <Header />
       <div className="grid h-full w-full grid-rows-1">
         <DiaryStoreProvider>

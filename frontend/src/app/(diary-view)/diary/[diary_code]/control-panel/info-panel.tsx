@@ -2,7 +2,7 @@
 
 import { DiaryTabPanel } from "@/app/(diary-view)/diary/[diary_code]/control-panel/panel";
 import { useDiaryStore } from "@/app/(diary-view)/diary/[diary_code]/diary-store";
-import { RichContentView } from "@/components/note-editor/rich-content-editor";
+import { RichContentEditor } from "@/components/note-editor/dynamic-rich-content-editor";
 import { UserBadge } from "@/components/profile-shortcut/profile-shortcut";
 import Image from "next/image";
 
@@ -30,7 +30,11 @@ export function InfoPanel() {
           <UserBadge user={user} />
         </div>
         <div className="p-4 text-2xl font-bold">{title}</div>
-        <RichContentView defaultValue={description} readOnly />
+        <RichContentEditor
+          defaultValue={description}
+          readOnly
+          key={JSON.stringify(description)}
+        />
       </div>
     </DiaryTabPanel>
   );
