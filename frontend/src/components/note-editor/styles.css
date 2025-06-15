@@ -3,12 +3,16 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+  }
+
   .dark {
     .bn-container {
       a {
         color: var(--accent-color) !important;
       }
     }
+
     .bn-editor {
       background-color: transparent;
     }
