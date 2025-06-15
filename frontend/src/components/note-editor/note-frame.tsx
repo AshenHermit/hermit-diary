@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  ConfirmDialog,
+  ConfirmDialogApi,
+} from "@/components/controls/confirmation-dialog";
 import { NoteContentEditor } from "@/components/note-editor/note-content-editor";
 import {
   NoteStoreConfig,
@@ -30,7 +34,10 @@ import { useRequestHandler } from "@/hooks/use-request-handler";
 import { useToast } from "@/hooks/use-toast";
 import { encodeId } from "@/lib/hash-utils";
 import { strToFormattedDateTime } from "@/lib/time-utils";
-import { updateDiaryNote } from "@/services/methods/user/notes";
+import {
+  deleteDiaryNote,
+  updateDiaryNote,
+} from "@/services/methods/user/notes";
 import { VerboseNote } from "@/services/types/notes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
@@ -39,9 +46,10 @@ import {
   BookOpenText,
   CircleDotDashed,
   EllipsisVerticalIcon,
+  Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -92,7 +100,9 @@ function NoteHeader() {
   const canEdit = useNoteStore((state) => state.canEdit);
   const note = useNoteStore((state) => state.note);
   const setNote = useNoteStore((state) => state.setNote);
+  const onNoteUpdate = useNoteStore((state) => state.onNoteUpdate);
   const pathname = usePathname();
+  const router = useRouter();
 
   const { toast } = useToast();
   const { loading, error, handleRequest } = useRequestHandler();
@@ -109,10 +119,32 @@ function NoteHeader() {
     [note],
   );
 
+  const diaryLink = `/diary/${encodeId("diary", note.diary.id)}?note=${encodeId("note", note.id)}&tab=note`;
+  const diaryLinkTree = `/diary/${encodeId("diary", note.diary.id)}?tab=tree`;
+  const pageLink = `/note/${encodeId("note", note.id)}`;
+
+  const deletionDialogApi = React.useRef<ConfirmDialogApi>(null);
+  const deleteNote = React.useCallback(async () => {
+    handleRequest(async () => {
+      await deleteDiaryNote(note);
+      if (onNoteUpdate) onNoteUpdate(note);
+      router.replace(diaryLinkTree);
+    });
+  }, [note, router, diaryLinkTree]);
+
   return (
     <div className="flex items-center justify-between">
+      <ConfirmDialog
+        apiRef={deletionDialogApi}
+        onConfirm={deleteNote}
+        title={"Удаление записи"}
+        description={"Безвозвратно"}
+        okContent={"Удалить"}
+        cancelContent={"Отмена"}
+        danger
+      />
       <NoteTitle />
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant={"ghost"} className="px-3">
             <EllipsisVerticalIcon />
@@ -124,19 +156,13 @@ function NoteHeader() {
           <DropdownMenuGroup>
             {!pathname.startsWith("/note") ? (
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link
-                  href={`/note/${encodeId("note", note.id)}`}
-                  className="focus-visible:ring-0"
-                >
+                <Link href={pageLink} className="focus-visible:ring-0">
                   <BookOpenText /> open as page
                 </Link>
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link
-                  href={`/diary/${encodeId("diary", note.diary.id)}?note=${encodeId("note", note.id)}&tab=note`}
-                  className="focus-visible:ring-0"
-                >
+                <Link href={diaryLink} className="focus-visible:ring-0">
                   <CircleDotDashed /> open in diary
                 </Link>
               </DropdownMenuItem>
@@ -155,6 +181,14 @@ function NoteHeader() {
                 >
                   Is Public
                 </DropdownMenuCheckboxItem>
+                <DropdownMenuItem
+                  className="cursor-pointer text-destructive"
+                  onClick={() => {
+                    deletionDialogApi.current?.open();
+                  }}
+                >
+                  <Trash2Icon /> Delete note
+                </DropdownMenuItem>
               </>
             ) : null}
           </DropdownMenuGroup>

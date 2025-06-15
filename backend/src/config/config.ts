@@ -9,6 +9,11 @@ const config: () => AppConfig = () => ({
     entities: [process.env.DB_ENTITIES ?? 'dist/**/*.entity.{ts,js}'],
     sync: process.env.DB_SYNC == '1',
   },
+  search: {
+    host: process.env.TYPESENSE_HOST ?? 'typesense',
+    port: parseInt(process.env.TYPESENSE_PORT ?? '8108'),
+    apiKey: process.env.TYPESENSE_API_KEY ?? 'xyz',
+  },
   site: {
     commonDomain: process.env.COMMON_DOMAIN ?? 'localhost',
     host: process.env.SITE_HOST ?? 'http://localhost:3000',

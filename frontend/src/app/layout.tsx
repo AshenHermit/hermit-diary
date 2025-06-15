@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import React, { Suspense } from "react";
 import "@/styles/global.css";
 import classNames from "classnames";
@@ -19,6 +19,14 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+};
+
+export const viewport: Viewport = {
+  userScalable: false,
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  height: "device-height",
 };
 
 export default function RootLayout({

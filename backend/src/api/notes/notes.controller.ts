@@ -14,6 +14,10 @@ import { ApiOkResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Note } from 'src/database/entities/note.entity';
 import { AuthenticatedRequest, SilentAuthRequest } from '../auth/jwt.strategy';
 import { NotesService, UpdateNoteDTO } from './notes.service';
+import {
+  NoteSearchService,
+  SearchNotesDto,
+} from '../search/note-search.service';
 
 @Controller('api/notes')
 export class NotesController {
@@ -28,6 +32,22 @@ export class NotesController {
     @Query('diaryId', new ParseIntPipe({ optional: true })) diaryId?: number,
   ) {
     return await this.notesService.fetch({ diaryId: diaryId, user: req.user });
+  }
+
+  @UseSilentAuthQuard()
+  @ApiOkResponse({ schema: { type: 'boolean' } })
+  @Get('search')
+  async searchNotes(
+    @Req() req: SilentAuthRequest,
+    @Query() query: SearchNotesDto,
+  ) {
+    return this.notesService.searchNotes(query.q, {
+      tags: query.tags,
+      isPublic: true,
+      diaryIsPublic: true,
+      page: query.page,
+      perPage: query.perPage,
+    });
   }
 
   @UseSilentAuthQuard()

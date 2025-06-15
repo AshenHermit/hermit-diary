@@ -28,7 +28,11 @@ const DragContext = React.createContext<DragContextType>({
   getDraggingData: () => {},
 });
 
-export function DragItemsContainer({ children }: React.PropsWithChildren<{}>) {
+export function DragItemsContainer({
+  children,
+}: {
+  children: () => React.ReactElement | React.ReactElement[];
+}) {
   const currentDraggingElement = React.useRef<HTMLElement | null>(null);
   const currentDraggingData = React.useRef<any>(null);
   const currentPointerOffset = React.useRef<number[]>([0, 0]);
@@ -108,7 +112,7 @@ export function DragItemsContainer({ children }: React.PropsWithChildren<{}>) {
     };
   }, []);
 
-  return <DragContext.Provider value={ctx}>{children}</DragContext.Provider>;
+  return <DragContext.Provider value={ctx}>{children()}</DragContext.Provider>;
 }
 
 export type DragItemProps<T extends HTMLElement, D> = {

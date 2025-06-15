@@ -45,8 +45,19 @@ export function ConfirmDialog({
     setIsOpen(false);
   }, [onConfirm]);
 
+  React.useEffect(() => {}, [isOpen]);
+
+  const onOpenChange = React.useCallback((state: boolean) => {
+    setIsOpen(state);
+    setTimeout(() => {
+      if (!isOpen) {
+        document.body.style.pointerEvents = "";
+      }
+    }, 100);
+  }, []);
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogTitle>{title}</DialogTitle>
         {isLoading ? (

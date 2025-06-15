@@ -22,6 +22,11 @@ import {
   PropertiesDto,
   PropertiesService,
 } from '../properties/properties.service';
+import {
+  NoteInSearch,
+  NoteInSearchWithDiary,
+  NoteSearchService,
+} from '../search/note-search.service';
 
 export class UpdateNoteDTO {
   @ApiProperty({ example: 'Untitled', description: 'name', required: false })
@@ -58,6 +63,7 @@ export class NotesService {
     @InjectRepository(Note) private notesRepository: Repository<Note>,
     private readonly noteContentService: NoteContentService,
     private readonly propertiesService: PropertiesService,
+    private readonly noteSearchService: NoteSearchService,
   ) {}
 
   async assertNoteWriteAccess(user: User, noteId: number) {
@@ -160,6 +166,15 @@ export class NotesService {
   async addNote(diary: Diary) {
     const newNote = this.notesRepository.create({ diary });
     const savedNote = await this.notesRepository.save(newNote);
+    await this.noteSearchService.addNote({
+      id: savedNote.id.toString(),
+      content: this.noteContentService.getTextContent(savedNote.content),
+      title: savedNote.name,
+      diaryId: savedNote.diary.id.toString(),
+      tags: [],
+      isPublic: savedNote.isPublic,
+      diaryIsPublic: savedNote.diary.isPublic,
+    });
     return savedNote;
   }
 
@@ -178,6 +193,23 @@ export class NotesService {
     }
     if (updateDto.name) {
       await this.updateNames(id, user);
+    }
+
+    const note = await this.notesRepository.findOne({
+      where: { id: id },
+      select: ['content', 'name', 'diary', 'id', 'isPublic'],
+      relations: { diary: true },
+    });
+    if (note) {
+      await this.noteSearchService.upsertNote({
+        id: id.toString(),
+        content: this.noteContentService.getTextContent(note.content),
+        diaryId: note.diary.id.toString(),
+        isPublic: note.isPublic,
+        diaryIsPublic: note.diary.isPublic,
+        title: note.name,
+        tags: [],
+      });
     }
   }
   async updateLinks(id: number, content: UpdateNoteDTO['content'], user: User) {
@@ -222,5 +254,37 @@ export class NotesService {
 
   async deleteNote(id: number) {
     await this.notesRepository.delete(id);
+    await this.noteSearchService.deleteNote(id.toString());
+  }
+
+  async searchNotes(
+    query: string,
+    params: {
+      tags?: string[];
+      diaryId?: string;
+      isPublic?: boolean;
+      diaryIsPublic?: boolean;
+      page?: number;
+      perPage?: number;
+    },
+  ) {
+    const res = await this.noteSearchService.searchNotes(query, params);
+    const diaries: Record<string, Diary> = {};
+    if (res && res.hits) {
+      for (const hit of res.hits) {
+        const diaryId = (hit.document as NoteInSearch).diaryId;
+        const noteId = (hit.document as NoteInSearch).id;
+        let diary: Diary | undefined = undefined;
+        if (diaryId in diaries) {
+          diary = diaries[diaryId];
+        } else {
+          diary = (await this.getByIdForUser(parseInt(noteId), undefined))
+            ?.diary;
+          if (diary) diaries[diaryId] = diary;
+        }
+        hit.document = { ...hit.document, diary };
+      }
+    }
+    return res;
   }
 }

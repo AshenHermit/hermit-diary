@@ -5,7 +5,19 @@ import { User } from 'src/database/entities/user.entity';
 import { Brackets, Repository } from 'typeorm';
 import { Diary } from 'src/database/entities/diary.entity';
 
-type ContentBlock = Record<string, any>;
+type ContentBlock = {
+  id: string;
+  type: string;
+  props: Record<string, any>;
+  content:
+    | {
+        type: 'text';
+        text: string;
+        styles: Record<string, any>;
+      }[]
+    | undefined;
+  children: any[];
+};
 
 @Injectable()
 export class NoteContentService {
@@ -24,19 +36,32 @@ export class NoteContentService {
     }
     return collectedBlocks;
   }
+  getTextContentOfBlock(block: ContentBlock) {
+    const text: string[] = [];
+    if (block.content) {
+      for (const content of block.content) {
+        if (content.type == 'text') {
+          text.push(content.text);
+        }
+      }
+    }
+    return text.join('\n');
+  }
 
-  async getAllBlocks(content: Record<string, any>) {
+  getAllBlocks(content: Record<string, any>) {
+    if (!content) return [];
+    if (!content.blocks) return [];
     const blocks = this.getNodesInBlocks(content.blocks);
     return blocks;
   }
 
   async findOutcomingLinks(content: Record<string, any>) {
     const links: Note[] = [];
-    const blocks = await this.getAllBlocks(content);
+    const blocks = this.getAllBlocks(content);
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
       if (block.type == 'noteReference') {
-        const props = block.props as Record<string, any>;
+        const props = block.props;
         if (props.note) {
           const noteProp = JSON.parse(props.note) as Record<string, any>;
           const linkNoteId = noteProp.id as number;
@@ -52,13 +77,23 @@ export class NoteContentService {
     return links;
   }
 
+  getTextContent(content: Record<string, any>) {
+    const blocks = this.getAllBlocks(content);
+    const text: string[] = [];
+    for (const block of blocks) {
+      const innerText = this.getTextContentOfBlock(block);
+      if (innerText) text.push(innerText);
+    }
+    return text.join('\n');
+  }
+
   async updateOutcomingLinks(content: Record<string, any>) {
     const links: Note[] = [];
-    const blocks = await this.getAllBlocks(content);
+    const blocks = this.getAllBlocks(content);
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
       if (block.type == 'noteReference') {
-        const props = block.props as Record<string, any>;
+        const props = block.props;
         if (props.note) {
           const noteProp = JSON.parse(props.note) as Record<string, any>;
           const linkNoteId = noteProp.id as number;
@@ -68,6 +103,7 @@ export class NoteContentService {
           if (note) {
             noteProp.name = note?.name;
           }
+          props.note = JSON.stringify(noteProp);
         }
       }
     }

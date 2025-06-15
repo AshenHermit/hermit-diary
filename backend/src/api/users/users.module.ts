@@ -19,10 +19,10 @@ import { UsersDiariesController } from './users.diaries.controller';
   ],
   providers: [UsersService, SocialLinksService],
   controllers: [
-    UsersController,
     UsersProfileController,
     UsersSocialLinksController,
     UsersDiariesController,
+    UsersController,
   ],
   exports: [UsersService],
 })

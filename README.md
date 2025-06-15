@@ -1,20 +1,20 @@
 <p align="center">
   <a href="https://diary.ashen-hermit.space/" target="blank"><img src="./resources/logo512.png" width="120" alt="diary logo" /></a>
 </p>
-<h3 align="center">Hermit's Diary v0.5</h3>
+<h3 align="center">Hermit's Diary v0.6</h3>
 <p align="center">Небольшая соц-сеть для ведения своих дневников и записей.</p>
 
 ## Features
 
 - Граф записей как в [_Obsidian_](https://obsidian.md/)
 - Мой _круг времени_, можно располагать на нем записи
-- Редактор текста как в [_Notion_](http://notion.so/), благодаря [YooptaEditor](https://github.com/yoopta-editor/Yoopta-Editor)
+- Редактор текста как в [_Notion_](http://notion.so/), благодаря [BlockNote](https://www.blocknotejs.org/)
+- Поиск записей при помощи [Typesense](https://typesense.org/)
 
 ## Planned
 
-- Описание дневников
-- Поиск записей при помощи [Typesense](https://typesense.org/)
+- Закладки
 - Теги к записям
+- Теги в поиске и закрепленные тэги
 - Параметры для отображения панелей Графа и Временного круга
-- Мобильная версия
 - Комментарии

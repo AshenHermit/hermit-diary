@@ -13,17 +13,29 @@
   }
 }
 
+@media (max-width: 400px) {
+  .layout {
+    padding: 0rem 1rem;
+  }
+}
+
 body {
   --color-primary: #282828;
   --color-bg: #1a1a1a;
   --color-panel: #2a2e37;
   --color-foreground: #fff;
+  --accent-color: #ffac59;
 
   --bg-image: url("/textures/bg.png");
-
-  min-height: 100vh;
   background-image: var(--bg-image);
-  pointer-events: all !important;
+  /* pointer-events: all !important; */
+}
+
+mark {
+  background-color: rgba(245, 222, 179, 0.205);
+  color: white;
+  padding: 4px;
+  border-radius: 8px;
 }
 
 /* 

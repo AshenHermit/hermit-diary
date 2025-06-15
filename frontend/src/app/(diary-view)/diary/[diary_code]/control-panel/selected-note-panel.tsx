@@ -41,6 +41,7 @@ export function SelectedNotePanel() {
   const setSelectedNote = useDiaryStore((state) => state.setSelectedNote);
   const notes = useDiaryStore((state) => state.notes);
   const writePermission = useDiaryStore((state) => state.writePermission);
+  const diaryTab = useDiaryStore((state) => state.currentTab);
 
   const [editMode, setEditMode] = React.useState(writePermission);
   const { note } = useDiaryNote(selectedNote?.id, [notes]);
@@ -81,24 +82,30 @@ export function SelectedNotePanel() {
   if (note) {
     return (
       <DiaryTabPanel className="grid h-full grid-rows-[1fr_auto]">
-        <NoteFrame
-          note={note}
-          config={{
-            canEdit: writePermission,
-            onNoteUpdate: () => loadNotes(),
-            editMode,
-            defaultEditMode: editMode,
-            setEditMode,
-            onNoteLinkUsed: onLink,
-            classNames: {
-              title: "!text-2xl font-bold",
-            },
-          }}
-        />
+        {diaryTab == "note" ? (
+          <NoteFrame
+            note={note}
+            config={{
+              canEdit: writePermission,
+              onNoteUpdate: () => loadNotes(),
+              editMode,
+              defaultEditMode: editMode,
+              setEditMode,
+              onNoteLinkUsed: onLink,
+              classNames: {
+                title: "!text-2xl font-bold",
+              },
+            }}
+          />
+        ) : null}
+
         <Accordion type="multiple">
           <AccordionItem value="references">
             <AccordionTrigger>
-              <LinkIcon /> References
+              <div></div>
+              <div className="flex items-center gap-4">
+                <LinkIcon /> References
+              </div>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-2">
               {note.incomingLinks.length > 0 ? (
@@ -130,7 +137,10 @@ export function SelectedNotePanel() {
           </AccordionItem>
           <AccordionItem value="properties">
             <AccordionTrigger>
-              <BoltIcon /> Properties
+              <div></div>
+              <div className="flex items-center gap-4">
+                <BoltIcon /> Properties
+              </div>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-2">
               <PropertiesSection

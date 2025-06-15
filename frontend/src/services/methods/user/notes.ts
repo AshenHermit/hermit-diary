@@ -1,6 +1,7 @@
 import { Diary } from "@/services/types/diary";
 import { DiaryNote, VerboseNote } from "@/services/types/notes";
 import { apiClient } from "@/services/api-client/client-api";
+import { NoteSearchResult } from "@/services/types/search";
 
 export async function addDiaryNote(diaryId: number) {
   return await apiClient.post<DiaryNote, {}>(`diaries/${diaryId}/notes`);
@@ -10,6 +11,40 @@ export async function getDiaryNotes(diaryId: number) {
   return await apiClient.get<DiaryNote[], {}>(`notes`, {
     diaryId: diaryId,
   });
+}
+
+export async function searchNotes(params: {
+  q: string;
+  tags: string[];
+  page: number;
+  perPage: number;
+}) {
+  return await apiClient.get<NoteSearchResult, {}>(`notes/search`, {
+    q: params.q,
+    tags: params.tags.join(","),
+    page: params.page,
+    perPage: params.perPage,
+  });
+}
+
+export async function searchNotesInDiary(
+  params: {
+    q: string;
+    tags: string[];
+    page: number;
+    perPage: number;
+  },
+  diaryId: number,
+) {
+  return await apiClient.get<NoteSearchResult, {}>(
+    `diaries/${diaryId}/notes/search`,
+    {
+      q: params.q,
+      tags: params.tags.join(","),
+      page: params.page,
+      perPage: params.perPage,
+    },
+  );
 }
 
 export async function getNoteWritePermission(noteId: number) {

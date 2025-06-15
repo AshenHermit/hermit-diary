@@ -13,6 +13,11 @@ export class AppConfigService {
   get db() {
     return this.configService.get<AppConfig['db']>('db') ?? config().db;
   }
+  get search() {
+    return (
+      this.configService.get<AppConfig['search']>('search') ?? config().search
+    );
+  }
   get storage() {
     return (
       this.configService.get<AppConfig['storage']>('storage') ??

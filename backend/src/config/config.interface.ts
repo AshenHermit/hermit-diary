@@ -7,6 +7,11 @@ export interface AppConfig {
     sync: boolean;
     entities: string[];
   };
+  search: {
+    host: string;
+    port: number;
+    apiKey: string;
+  };
   site: {
     commonDomain: string;
     host: string;

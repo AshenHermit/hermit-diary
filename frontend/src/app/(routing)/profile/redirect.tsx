@@ -10,7 +10,7 @@ export function ProfileRedirectComponent() {
 
   React.useEffect(() => {
     if (loaded && !authorized) {
-      router.replace("/");
+      router.replace("/login");
     }
   }, [loaded, authorized, router]);
 

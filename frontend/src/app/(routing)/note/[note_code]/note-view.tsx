@@ -63,8 +63,8 @@ export function NoteView({
   return (
     <>
       <EditModeLoader value={editMode} onValueChange={setEditMode} />
-      <div className="grid h-full grid-cols-[200px_1px_1fr_1px_200px] gap-6">
-        <div className="flex flex-col gap-2">
+      <div className="h-full grid-cols-[200px_1fr_200px] gap-6 max-md:flex max-md:grid-cols-1 max-md:grid-rows-[auto_auto_auto] max-md:flex-col md:grid">
+        <div className="flex flex-col gap-2 max-md:order-3">
           {note.incomingLinks.length > 0 ? (
             <div className="flex items-center gap-2 text-base text-white">
               <ArrowDownRight /> Incoming links
@@ -106,22 +106,23 @@ export function NoteView({
             </AccordionItem>
           </Accordion>
         </div>
-        <div className="bg-white opacity-20"></div>
-        <NoteFrame
-          note={note}
-          config={{
-            canEdit: writePermission,
-            onNoteUpdate: () => fetchNote(),
-            editMode,
-            defaultEditMode: editMode,
-            setEditMode,
-            onNoteLinkUsed: onLink,
-            classNames: {
-              title: "!text-2xl font-bold",
-            },
-          }}
-        />
-        <div className="bg-white opacity-20"></div>
+        <div className="border-white/20 max-md:order-1 max-md:w-full max-md:border-b-[1px] max-md:py-4 md:border-x-[1px] md:px-4">
+          <NoteFrame
+            note={note}
+            config={{
+              canEdit: writePermission,
+              onNoteUpdate: () => fetchNote(),
+              editMode,
+              defaultEditMode: editMode,
+              setEditMode,
+              onNoteLinkUsed: onLink,
+              classNames: {
+                title: "!text-2xl font-bold",
+              },
+            }}
+          />
+        </div>
+        <div className="max-md:order-3"></div>
       </div>
     </>
   );

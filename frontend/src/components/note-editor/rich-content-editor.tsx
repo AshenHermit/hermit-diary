@@ -1,12 +1,14 @@
 "use client";
 import { createEditorSchema } from "@/components/note-editor/blocknote-schema";
 import { useRequestHandler } from "@/hooks/use-request-handler";
+import { uploadFile } from "@/services/methods/files/upload-file";
 import { RichContentData } from "@/services/types/notes";
 import { useLoadingManager } from "@/store/loading-store";
 import { BlockNoteView } from "@blocknote/mantine";
 import { SuggestionMenuController, useCreateBlockNote } from "@blocknote/react";
 import debounce from "just-debounce-it";
 import React from "react";
+import "./styles.css";
 
 export type RichContentEditorProps = {
   readOnly?: boolean;
@@ -35,14 +37,19 @@ export default function RichContentEditor({
   );
   const editor = useCreateBlockNote({
     schema: schema,
-
     initialContent: Array.isArray(defaultValue?.blocks)
       ? defaultValue?.blocks
       : undefined,
+    uploadFile: async (file: File) => {
+      const res = await uploadFile(file);
+      if (res) return res?.url;
+      return "";
+    },
   });
 
   const { loading, error, handleRequest } = useRequestHandler();
   const { startTask, endTask } = useLoadingManager();
+  const viewRef = React.useRef<HTMLDivElement>(null);
 
   const handleDebounceChange = React.useMemo(
     () =>
@@ -58,15 +65,15 @@ export default function RichContentEditor({
 
   const onChange = React.useCallback(() => {
     handleDebounceChange(editor.document);
-    setBlocks(editor.document);
+    // setBlocks(editor.document);
   }, [editor]);
 
   const [html, setHTML] = React.useState<string | null>(null);
   React.useEffect(() => {
     (async () => {
       if (blocks && readOnly) {
-        const buildedHtml = await editor.blocksToFullHTML(blocks);
-        setHTML(buildedHtml);
+        // const buildedHtml = await editor.blocksToFullHTML(blocks);
+        // setHTML(buildedHtml);
       }
     })();
   }, [blocks]);
@@ -76,11 +83,18 @@ export default function RichContentEditor({
   // }
 
   return (
-    <BlockNoteView editable={!readOnly} editor={editor} onChange={onChange}>
-      <SuggestionMenuController
-        triggerCharacter={"/"}
-        getItems={suggestionMenuProcessor(editor)}
-      />
-    </BlockNoteView>
+    <>
+      <BlockNoteView
+        editable={!readOnly}
+        editor={editor}
+        onChange={onChange}
+        ref={viewRef}
+      >
+        <SuggestionMenuController
+          triggerCharacter={"/"}
+          getItems={suggestionMenuProcessor(editor)}
+        />
+      </BlockNoteView>
+    </>
   );
 }

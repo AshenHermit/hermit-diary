@@ -31,17 +31,17 @@ export const useUserStore = create<UserState>()((set, get) => ({
   loaded: false,
   setUser: (user: LocalUser) => set((state) => user),
   loadUser: () => {
-    getProfile()
-      .then((profile) => {
-        get().setUser({
-          authorized: true,
-          ...profile,
-        });
-        set((state) => ({ loaded: true }));
-      })
-      .catch((e) => {
+    getProfile().then((profile) => {
+      if (!profile) {
         set((state) => ({ loaded: true, ...defaultUserObject }));
+        return;
+      }
+      get().setUser({
+        authorized: true,
+        ...profile,
       });
+      set((state) => ({ loaded: true }));
+    });
   },
 }));
 

@@ -14,8 +14,15 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDTO } from '../auth/create-user.dto';
 import { AuthService } from 'src/api/auth/auth.service';
-import { JwtAuthGuard, UseAuthQuard } from 'src/api/auth/jwt-auth.guard';
-import { AuthenticatedRequest } from 'src/api/auth/jwt.strategy';
+import {
+  JwtAuthGuard,
+  UseAuthQuard,
+  UseSilentAuthQuard,
+} from 'src/api/auth/jwt-auth.guard';
+import {
+  AuthenticatedRequest,
+  SilentAuthRequest,
+} from 'src/api/auth/jwt.strategy';
 import { UpdateUserDTO } from './update-user.dto';
 import { AuthUserDTO } from 'src/api/auth/auth-user.dto';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
@@ -31,10 +38,10 @@ import { SocialLink } from 'src/database/entities/social-link.entity';
 export class UsersProfileController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseAuthQuard()
+  @UseSilentAuthQuard()
   @ApiOkResponse({ type: User })
   @Get()
-  async getProfile(@Req() req: AuthenticatedRequest) {
+  async getProfile(@Req() req: SilentAuthRequest) {
     return req.user;
   }
 

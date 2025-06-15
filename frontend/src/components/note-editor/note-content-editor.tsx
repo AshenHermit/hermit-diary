@@ -1,13 +1,12 @@
 "use client";
 
-import "./styles.css";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 import { useNoteStore } from "@/components/note-editor/note-store";
 import React from "react";
 import { updateDiaryNote } from "@/services/methods/user/notes";
 import { RichContentData } from "@/services/types/notes";
-import { RichContentEditor } from "@/components/note-editor/dynamic-rich-content-editor";
+import RichContentEditor from "@/components/note-editor/rich-content-editor";
 
 export function NoteContentEditor({ readOnly }: { readOnly?: boolean }) {
   const actualNote = useNoteStore((state) => state.note);
@@ -17,6 +16,7 @@ export function NoteContentEditor({ readOnly }: { readOnly?: boolean }) {
 
   const handleDebouncedSave = React.useCallback(
     async (data: RichContentData) => {
+      console.log(data);
       note.content = data;
       let updateData = { id: note.id, content: data };
       await updateDiaryNote(updateData);
