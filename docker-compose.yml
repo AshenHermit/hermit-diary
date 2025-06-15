@@ -14,6 +14,18 @@ services:
     networks:
       - hermit_diary
 
+  typesense:
+    image: typesense/typesense:28.0
+    container_name: hdiary_typesense
+    restart: on-failure
+    ports:
+      - "${TYPESENSE_EXTERNAL_PORT}:8108"
+    volumes:
+      - hdiary_typesense_data:/data
+    command: "--data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors"
+    networks:
+      - hermit_diary
+
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -44,6 +56,9 @@ services:
       - GOOGLE_AUTH_CLIENT_ID=${GOOGLE_AUTH_CLIENT_ID}
       - GOOGLE_AUTH_CLIENT_SECRET=${GOOGLE_AUTH_CLIENT_SECRET}
       - GOOGLE_AUTH_CALLBACK=${GOOGLE_AUTH_CALLBACK}
+      - TYPESENSE_HOST=${TYPESENSE_HOST}
+      - TYPESENSE_PORT=${TYPESENSE_PORT}
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
       - SITE_HOST=${SITE_HOST}
       - COMMON_DOMAIN=${COMMON_DOMAIN}
       - TZ=${TZ}
@@ -51,6 +66,7 @@ services:
       - "${BACKEND_EXTERNAL_PORT}:3000"
     depends_on:
       - db
+      - typesense
     volumes:
       - hdiary_uploads:${STORAGE_DIR}
     networks:
@@ -61,10 +77,12 @@ services:
       context: ./frontend
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_REMOTE_API_URL: ${NEXT_PUBLIC_REMOTE_API_URL}
     container_name: hdiary_frontend
     restart: always
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_REMOTE_API_URL=${NEXT_PUBLIC_REMOTE_API_URL}
     ports:
       - "${FRONTEND_EXTERNAL_PORT}:3000"
     depends_on:
@@ -96,3 +114,4 @@ networks:
 volumes:
   hdiary_db:
   hdiary_uploads:
+  hdiary_typesense_data:
