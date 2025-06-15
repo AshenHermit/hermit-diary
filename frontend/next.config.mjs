@@ -8,6 +8,7 @@ const __dirname = dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
   output: "standalone",
   images: {
     remotePatterns: [
@@ -35,7 +36,7 @@ const nextConfig = {
         {
           source: "/uploads/:path*",
           destination: `${
-            process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3030/api"
+            process.env.NEXT_PUBLIC_REMOTE_API_URL
           }/uploads/:path*/`,
         },
       ],

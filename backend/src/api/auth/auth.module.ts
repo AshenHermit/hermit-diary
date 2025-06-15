@@ -8,9 +8,12 @@ import { GoogleStrategy } from './google/auth-google.strategy';
 import { AuthController } from './auth.controller';
 import { AppConfigModule } from 'src/config/config.module';
 import { AppConfigService } from 'src/config/config.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/database/entities/user.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
     AppConfigModule,
     UsersModule,
     PassportModule,

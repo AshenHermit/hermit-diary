@@ -13,8 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/hooks/user-hooks";
+import { encodeId } from "@/lib/hash-utils";
 import { GlobalUser } from "@/services/types/user";
 import { useLocalUserPicture, useUserStore } from "@/store/user-store";
+import classNames from "classnames";
 import { PersonStandingIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -75,11 +77,8 @@ export function UserBadge({ user }: { user: GlobalUser }) {
     <div className="">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="flex w-fit cursor-pointer select-none items-center gap-4 rounded-2xl bg-muted/50 p-2 pr-4">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src={user.picture}></AvatarImage>
-            </Avatar>
-            <div className="text-sm font-semibold">{user.name}</div>
+          <div>
+            <UserBadgeBase user={user} />
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
@@ -87,7 +86,7 @@ export function UserBadge({ user }: { user: GlobalUser }) {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild className="cursor-pointer">
-              <Link href={`/`}>
+              <Link href={`/user/${encodeId("user", user.id)}`}>
                 <PersonStandingIcon />
                 Profile
               </Link>
@@ -96,6 +95,36 @@ export function UserBadge({ user }: { user: GlobalUser }) {
           <DropdownMenuSeparator />
         </DropdownMenuContent>
       </DropdownMenu>
+    </div>
+  );
+}
+
+export function UserBadgeLink({ user }: { user: GlobalUser }) {
+  return (
+    <Link href={`/user/${encodeId("user", user.id)}`}>
+      <UserBadgeBase user={user} />
+    </Link>
+  );
+}
+
+export function UserBadgeBase({
+  user,
+  className,
+}: {
+  user: GlobalUser;
+  className?: string;
+}) {
+  return (
+    <div
+      className={classNames(
+        "flex w-fit cursor-pointer select-none items-center gap-3 rounded-2xl bg-muted/50 p-2 pr-4",
+        className,
+      )}
+    >
+      <Avatar className="h-6 w-6">
+        <AvatarImage src={user.picture}></AvatarImage>
+      </Avatar>
+      <div className="text-sm font-semibold">{user.name}</div>
     </div>
   );
 }

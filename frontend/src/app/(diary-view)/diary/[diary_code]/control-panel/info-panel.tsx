@@ -11,6 +11,7 @@ export function InfoPanel() {
   const description = useDiaryStore((state) => state.description);
   const user = useDiaryStore((state) => state.user);
   const properties = useDiaryStore((state) => state.properties);
+  const diaryTab = useDiaryStore((state) => state.currentTab);
 
   return (
     <DiaryTabPanel className="!p-0">
@@ -30,11 +31,13 @@ export function InfoPanel() {
           <UserBadge user={user} />
         </div>
         <div className="p-4 text-2xl font-bold">{title}</div>
-        <RichContentEditor
-          defaultValue={description}
-          readOnly
-          key={JSON.stringify(description)}
-        />
+        {diaryTab == "info" ? (
+          <RichContentEditor
+            defaultValue={description}
+            readOnly
+            key={JSON.stringify(description)}
+          />
+        ) : null}
       </div>
     </DiaryTabPanel>
   );

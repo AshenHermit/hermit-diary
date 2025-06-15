@@ -42,7 +42,8 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "transliteration": "^2.3.5",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.21",
+    "typesense": "^2.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

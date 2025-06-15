@@ -1,7 +1,7 @@
 import { HASH_ID_SECRET } from "@/constants";
 import Hashids from "hashids";
 
-export type HashIdType = "note" | "diary";
+export type HashIdType = "note" | "diary" | "user";
 
 function getHashIds(type: HashIdType) {
   return new Hashids(

@@ -25,6 +25,7 @@ export function ValueScroller({
 }: ValueScrollerProps) {
   let clampedValue = clamp(value, min, max);
   const valueRef = React.useRef(clamp(value, min, max));
+  const prevTouchX = React.useRef<number>(null);
   React.useEffect(() => {
     valueRef.current = clamp(value, min, max);
   }, [value]);
@@ -38,12 +39,9 @@ export function ValueScroller({
 
   const [isScrolling, setIsScrolling] = React.useState(false);
 
-  const onCursorDown = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      setIsScrolling(true);
-    },
-    [setIsScrolling],
-  );
+  const onCursorDown = React.useCallback(() => {
+    setIsScrolling(true);
+  }, [setIsScrolling]);
 
   const onCursorUp = React.useCallback(
     (e: MouseEvent) => {
@@ -59,13 +57,39 @@ export function ValueScroller({
     },
     [isScrolling, factor],
   );
+  const onTouchMove = React.useCallback(
+    (e: TouchEvent) => {
+      if (isScrolling && e.touches.length > 0) {
+        var touch = e.touches[0];
+        if (prevTouchX.current !== null) {
+          onChange(
+            valueRef.current + (touch.clientX - prevTouchX.current) * factor,
+          );
+        }
+        prevTouchX.current = touch.clientX;
+      }
+    },
+    [isScrolling, factor],
+  );
+  const onTouchEnd = React.useCallback(
+    (e: TouchEvent) => {
+      setIsScrolling(false);
+      prevTouchX.current = null;
+    },
+    [isScrolling, factor],
+  );
 
   React.useEffect(() => {
     window.addEventListener("mouseup", onCursorUp);
     window.addEventListener("mousemove", onCursorMove);
+    window.addEventListener("touchmove", onTouchMove);
+    window.addEventListener("touchend", onTouchEnd);
+
     return () => {
       window.removeEventListener("mouseup", onCursorUp);
       window.removeEventListener("mousemove", onCursorMove);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
     };
   }, [onCursorUp, onCursorMove]);
 
@@ -86,7 +110,8 @@ export function ValueScroller({
       ) : null}
       <div
         className="flex cursor-ew-resize select-none justify-center"
-        onMouseDown={(e) => onCursorDown(e)}
+        onMouseDown={(e) => onCursorDown()}
+        onTouchStart={(e) => onCursorDown()}
       >
         <RulerDimensionLineIcon />
       </div>

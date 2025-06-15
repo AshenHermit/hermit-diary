@@ -296,6 +296,11 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.25.9"
 
+"@babel/runtime@^7.23.2":
+  version "7.27.6"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.27.6.tgz"
+  integrity sha512-vbavdySgbTTrmFE+EsiqUTzlOr5bzlnJtUv9PynGCAKvfQqjIXbvFdumPM/GxMDfyuGMJaJAU6TO4zc1Jf1i8Q==
+
 "@babel/template@^7.26.9", "@babel/template@^7.27.0", "@babel/template@^7.3.3":
   version "7.27.0"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.27.0.tgz"
@@ -1999,6 +2004,15 @@ asynckit@^0.4.0:
   resolved "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
+axios@^1.7.2:
+  version "1.10.0"
+  resolved "https://registry.npmjs.org/axios/-/axios-1.10.0.tgz"
+  integrity sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
 b4a@^1.6.4:
   version "1.6.7"
   resolved "https://registry.npmjs.org/b4a/-/b4a-1.6.7.tgz"
@@ -3205,6 +3219,11 @@ flatted@^3.2.9:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.3.3.tgz"
   integrity sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==
 
+follow-redirects@^1.15.6:
+  version "1.15.9"
+  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.9.tgz"
+  integrity sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==
+
 foreground-child@^3.1.0:
   version "3.3.1"
   resolved "https://registry.npmjs.org/foreground-child/-/foreground-child-3.3.1.tgz"
@@ -4391,6 +4410,11 @@ log-symbols@^4.1.0:
     chalk "^4.1.0"
     is-unicode-supported "^0.1.0"
 
+loglevel@^1.8.1:
+  version "1.9.2"
+  resolved "https://registry.npmjs.org/loglevel/-/loglevel-1.9.2.tgz"
+  integrity sha512-HgMmCqIJSAKqo68l0rS2AanEWfkxaZ5wNiEFb5ggm08lDs9Xl2KxBlX3PTcaD2chBM1gXAYf491/M2Rv8Jwayg==
+
 lowercase-keys@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/lowercase-keys/-/lowercase-keys-3.0.0.tgz"
@@ -5167,6 +5191,11 @@ proxy-addr@~2.0.7:
   dependencies:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
+
+proxy-from-env@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
+  integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
 punycode@^2.1.0:
   version "2.3.1"
@@ -6046,7 +6075,7 @@ tsconfig-paths@^4.1.2, tsconfig-paths@^4.2.0, tsconfig-paths@4.2.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^2.1.0, tslib@^2.5.0, tslib@^2.8.1, tslib@2.8.1:
+tslib@^2.1.0, tslib@^2.5.0, tslib@^2.6.2, tslib@^2.8.1, tslib@2.8.1:
   version "2.8.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
@@ -6132,6 +6161,15 @@ typescript@5.7.3:
   version "5.7.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-5.7.3.tgz"
   integrity sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==
+
+typesense@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npmjs.org/typesense/-/typesense-2.0.3.tgz"
+  integrity sha512-fRJjFdDNZn6qF9XzIk+bB8n8cm0fiAx1SGcpLDfNcsGtp8znITfG+SO+l/qk63GCRXZwJGq7wrMDLFUvblJSHA==
+  dependencies:
+    axios "^1.7.2"
+    loglevel "^1.8.1"
+    tslib "^2.6.2"
 
 uid@2.0.2:
   version "2.0.2"

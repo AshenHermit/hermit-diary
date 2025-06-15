@@ -104,16 +104,32 @@ export function NotesManager() {
   const notes = useDiaryStore((state) => state.notes);
   const treeRoots = buildTree(notes);
 
+  const addNote = useAddNote();
+
   return (
-    <DiaryTabPanel className="h-full">
+    <DiaryTabPanel className="h-full max-w-[100vw]">
       <div className="text-lg font-semibold">Notes</div>
       <div className="flex h-full flex-col justify-stretch gap-1">
         <DragItemsContainer>
-          <NoteTree treeItems={treeRoots} level={0} />
-          {/* {notes.map((note) => (
-            <NoteItem note={note} key={note.id} />
-          ))} */}
-          <FreeSpaceArea />
+          {() => (
+            <>
+              <div className="flex flex-col justify-stretch rounded-xl bg-black p-4">
+                <NoteTree
+                  treeItems={treeRoots}
+                  level={0}
+                  key={JSON.stringify(notes)}
+                />
+              </div>
+              {/* {notes.map((note) => (
+              <NoteItem note={note} key={note.id} />
+            ))} */}
+              <FreeSpaceArea />
+              <Button onClick={addNote} variant={"ghost"}>
+                <CirclePlusIcon width={16} />
+                Add Note
+              </Button>
+            </>
+          )}
         </DragItemsContainer>
       </div>
     </DiaryTabPanel>
@@ -127,11 +143,15 @@ export function NoteTree({
   treeItems: TreeItem[];
   level: number;
 }) {
+  const notes = useDiaryStore((state) => state.notes);
+  const reparentNote = useReparentNote(notes);
+
   return treeItems.map((treeItem) => (
     <TreeItemComponent
       key={treeItem.id + " " + treeItems.length}
       level={level}
       treeItem={treeItem}
+      reparentNote={reparentNote}
     />
   ));
 }
@@ -139,12 +159,13 @@ export function NoteTree({
 function TreeItemComponent({
   treeItem,
   level,
+  reparentNote,
 }: {
   treeItem: TreeItem;
   level: number;
+  reparentNote: ReturnType<typeof useReparentNote>;
 }) {
   const itemRef = React.useRef<HTMLDivElement>(null);
-  const reparentNote = useReparentNote();
 
   return (
     <div
@@ -152,7 +173,7 @@ function TreeItemComponent({
       key={treeItem.id}
       ref={itemRef}
     >
-      <Collapsible className="w-[350px]">
+      <Collapsible className="w-[350px]" key={JSON.stringify(treeItem)}>
         <DragItem
           data={treeItem}
           onDataDropped={(data) => reparentNote(data, treeItem)}
@@ -168,7 +189,7 @@ function TreeItemComponent({
             </Button>
           </CollapsibleTrigger>
         ) : null}
-        <CollapsibleContent className="flex flex-col justify-stretch gap-1">
+        <CollapsibleContent className="flex flex-col justify-stretch gap-1 pt-1">
           {treeItem.children.length > 0 ? (
             <NoteTree level={level + 1} treeItems={treeItem.children} />
           ) : null}
@@ -178,8 +199,7 @@ function TreeItemComponent({
   );
 }
 
-function useReparentNote() {
-  const notes = useDiaryStore((state) => state.notes);
+function useReparentNote(notes: DiaryNote[]) {
   const loadNotes = useDiaryStore((state) => state.loadNotes);
   const forceUpdateNotes = useDiaryStore((state) => state.forceUpdateNotes);
   const { loading, error, handleRequest } = useRequestHandler();
@@ -190,9 +210,7 @@ function useReparentNote() {
       if (toNote.id == note.id) return;
       if (toNote.getParentIds().indexOf(note.id) != -1) return;
     }
-    console.log(notes);
     const actualNote = notes.filter((x) => x.id == note.id)[0];
-    console.log(actualNote);
     actualNote.parentNoteId = toNoteId;
 
     forceUpdateNotes(notes);
@@ -208,12 +226,11 @@ function NoteItem({
   note,
   ...props
 }: { note: TreeItem } & React.ComponentProps<"button">) {
-  const deletionDialogApi = React.useRef<ConfirmDialogApi>(null);
-
   const loadNotes = useDiaryStore((state) => state.loadNotes);
 
   const { loading, error, handleRequest } = useRequestHandler();
 
+  const deletionDialogApi = React.useRef<ConfirmDialogApi>(null);
   const deleteNote = React.useCallback(async () => {
     handleRequest(async () => {
       await deleteDiaryNote(note);
@@ -241,7 +258,7 @@ function NoteItem({
         cancelContent={"Отмена"}
         danger
       />
-      <ContextMenu>
+      <ContextMenu modal={false}>
         <ContextMenuTrigger>
           <Button
             variant={"outline"}
@@ -272,7 +289,7 @@ function NoteItem({
   );
 }
 
-function FreeSpaceArea() {
+function useAddNote() {
   const diaryId = useDiaryStore((state) => state.id);
   const loadNotes = useDiaryStore((state) => state.loadNotes);
 
@@ -281,7 +298,15 @@ function FreeSpaceArea() {
     await loadNotes();
   }, [loadNotes, diaryId]);
 
-  const reparentNote = useReparentNote();
+  return addNewNote;
+}
+
+function FreeSpaceArea() {
+  const addNewNote = useAddNote();
+
+  const notes = useDiaryStore((state) => state.notes);
+
+  const reparentNote = useReparentNote(notes);
 
   return (
     <ContextMenu>

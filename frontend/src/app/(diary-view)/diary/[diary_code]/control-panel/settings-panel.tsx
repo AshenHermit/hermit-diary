@@ -111,7 +111,10 @@ export function SettingsPanel() {
       <Accordion type="multiple" defaultValue={["general"]}>
         {sections.map((x) => (
           <AccordionItem key={x.key} value={x.key}>
-            <AccordionTrigger className="text-lg">{x.title}</AccordionTrigger>
+            <AccordionTrigger className="text-lg">
+              <div></div>
+              <div className="flex items-center gap-4">{x.title}</div>
+            </AccordionTrigger>
             <AccordionContent>{x.content}</AccordionContent>
           </AccordionItem>
         ))}
@@ -310,6 +313,7 @@ function PropertiesSection() {
 export function DiaryDescriptionEditor({ readOnly }: { readOnly?: boolean }) {
   const actualDescription = useDiaryStore((state) => state.description);
   const diaryId = useDiaryStore((state) => state.id);
+  const diaryTab = useDiaryStore((state) => state.currentTab);
   const loadDiary = useDiaryStore((state) => state.loadDiary);
   // const description = React.useMemo(() => actualDescription, [diaryId]);
   const writePermission = useDiaryStore((state) => state.writePermission);
@@ -322,7 +326,7 @@ export function DiaryDescriptionEditor({ readOnly }: { readOnly?: boolean }) {
     },
     [diaryId],
   );
-
+  if (diaryTab != "settings") return;
   return (
     <RichContentEditor
       readOnly={!writePermission}

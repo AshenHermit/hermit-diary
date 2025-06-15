@@ -85,6 +85,7 @@ export function StageView({
 
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length == 0) return;
+      e.preventDefault();
       state.dragButtonPressed = true;
       const touch = e.touches[0];
       state.lastXPos = touch.clientX;
@@ -95,9 +96,14 @@ export function StageView({
     };
     const onTouchMove = (e: TouchEvent) => {
       if (e.touches.length == 0) return;
+      e.preventDefault();
       const touch = e.touches[0];
       if (state.dragButtonPressed) {
-        drag(touch.clientX - state.lastXPos, touch.clientY - state.lastYPos);
+        if (onDrag)
+          onDrag(
+            touch.clientX - state.lastXPos,
+            touch.clientY - state.lastYPos,
+          );
         state.lastXPos = touch.clientX;
         state.lastYPos = touch.clientY;
       }
@@ -156,6 +162,106 @@ export function StageView({
     [],
   );
 
+  const [stagePos, setStagePos] = React.useState({ x: 0, y: 0 });
+  const [stageScale, setStageScale] = React.useState({ x: 1, y: 1 });
+  const [lastCenter, setLastCenter] = React.useState<Konva.Vector2d | null>(
+    null,
+  );
+  const [lastDist, setLastDist] = React.useState(0);
+  const [dragStopped, setDragStopped] = React.useState(false);
+
+  const getDistance = (p1: Konva.Vector2d, p2: Konva.Vector2d) => {
+    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+  };
+
+  const getCenter = (
+    p1: Konva.Vector2d,
+    p2: Konva.Vector2d,
+  ): Konva.Vector2d => {
+    return {
+      x: (p1.x + p2.x) / 2,
+      y: (p1.y + p2.y) / 2,
+    } as Konva.Vector2d;
+  };
+
+  const onKonvaTouchMove = React.useCallback(
+    (e: Konva.KonvaEventObject<TouchEvent>) => {
+      e.evt.preventDefault();
+      const touch1 = e.evt.touches[0];
+      const touch2 = e.evt.touches[1];
+      const stage = e.target.getStage();
+
+      if (!stage) return;
+      if (!zoom) return;
+
+      // we need to restore dragging, if it was cancelled by multi-touch
+      if (touch1 && !touch2 && !stage.isDragging() && dragStopped) {
+        stage.startDrag();
+        setDragStopped(false);
+      }
+
+      if (touch1 && touch2) {
+        // if the stage was under Konva's drag&drop
+        // we need to stop it, and implement our own pan logic with two pointers
+        if (stage.isDragging()) {
+          stage.stopDrag();
+          setDragStopped(true);
+        }
+
+        const p1 = {
+          x: touch1.clientX,
+          y: touch1.clientY,
+        };
+        const p2 = {
+          x: touch2.clientX,
+          y: touch2.clientY,
+        };
+
+        if (!lastCenter) {
+          setLastCenter(getCenter(p1, p2) as any);
+          return;
+        }
+        const newCenter = getCenter(p1, p2);
+
+        const dist = getDistance(p1, p2);
+
+        if (!lastDist) {
+          setLastDist(dist);
+          return;
+        }
+
+        // local coordinates of center point
+        const pointTo = {
+          x:
+            (newCenter.x - stageTransformTarget.current.x) /
+            stageTransformTarget.current.scale,
+          y:
+            (newCenter.y - stageTransformTarget.current.y) /
+            stageTransformTarget.current.scale,
+        };
+
+        const scale = stageTransformTarget.current.scale * (dist / lastDist);
+        stageTransformTarget.current.scale = scale;
+
+        // calculate new position of the stage
+        const dx = newCenter.x - lastCenter.x;
+        const dy = newCenter.y - lastCenter.y;
+
+        stageTransformTarget.current.x = newCenter.x - pointTo.x * scale + dx;
+        stageTransformTarget.current.y = newCenter.y - pointTo.y * scale + dy;
+
+        setLastDist(dist);
+        setLastCenter(newCenter);
+      }
+    },
+    [dragStopped, lastCenter, lastDist, stagePos, stageScale],
+  );
+
+  const handleTouchEnd = () => {
+    setLastDist(0);
+    setLastCenter(null);
+  };
+
   useLayerAnimation((frame) => {
     if (!stageRef.current) return;
     let newScale =
@@ -176,7 +282,14 @@ export function StageView({
 
   return (
     <div className="absolute left-0 top-0 h-full w-full" ref={containerRef}>
-      <Stage ref={stageRef} width={500} height={500} onWheel={onScroll}>
+      <Stage
+        ref={stageRef}
+        width={500}
+        height={500}
+        onWheel={onScroll}
+        onTouchMove={onKonvaTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {children}
       </Stage>
     </div>

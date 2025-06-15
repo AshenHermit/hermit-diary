@@ -82,7 +82,7 @@ function AddNewDiaryCard(props: React.ComponentProps<"div">) {
   return (
     <div
       {...props}
-      className="flex h-[200px] cursor-pointer flex-col items-center justify-center gap-4 overflow-hidden rounded-2xl border-2 border-dashed border-muted text-muted transition-all hover:scale-105"
+      className="flex h-[200px] cursor-pointer flex-col items-center justify-center gap-4 overflow-hidden rounded-2xl border-2 border-dashed border-foreground text-foreground opacity-50 transition-all hover:scale-105"
     >
       <CircleFadingPlus />
       <div>new diary</div>

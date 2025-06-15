@@ -389,7 +389,7 @@ export function PropertiesEditor({
               {opt.type.icon}
               {opt.title}
             </div>
-            <div className="flex w-full flex-col">
+            <div className="flex w-full flex-col justify-center">
               <Component
                 readOnly={!editMode}
                 type={opt.type}

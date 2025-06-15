@@ -5,17 +5,32 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthTokenDTO } from './auth-token.dto';
 import { Response } from 'express';
 import { AppConfigService } from 'src/config/config.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/database/entities/user.entity';
+import { ObjectLiteral, Repository } from 'typeorm';
+
+function getCols<T extends ObjectLiteral>(
+  repository: Repository<T>,
+): (keyof T)[] {
+  return repository.metadata.columns.map(
+    (col) => col.propertyName,
+  ) as (keyof T)[];
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    @InjectRepository(User) private usersRepository: Repository<User>,
     private jwtService: JwtService,
     private config: AppConfigService,
   ) {}
 
   async validateUser(email: string, pass: string) {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersRepository.findOne({
+      where: { email },
+      select: getCols(this.usersRepository),
+    });
     if (user?.password == '') return null;
     if (user && (await bcrypt.compare(pass, user.password))) {
       const { password, ...result } = user;

@@ -1,4 +1,4 @@
-import { apiClient } from "@/services/api-client/client-api";
+import { apiClient } from "@/services/api-client/remote-api";
 
 export type UploadResult = {
   message: string;

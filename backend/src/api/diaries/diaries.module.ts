@@ -7,9 +7,15 @@ import { NotesModule } from '../notes/notes.module';
 import { DiariesNotesController } from './diaries.notes.controller';
 import { PropertiesModule } from '../properties/properties.module';
 import { DiariesPropertiesController } from './diaries.properties.controller';
+import { SearchModule } from '../search/search.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Diary]), NotesModule, PropertiesModule],
+  imports: [
+    TypeOrmModule.forFeature([Diary]),
+    NotesModule,
+    PropertiesModule,
+    SearchModule,
+  ],
   providers: [DiariesService],
   controllers: [
     DiariesController,

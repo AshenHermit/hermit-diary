@@ -1,5 +1,6 @@
 import { NoteView } from "@/app/(routing)/note/[note_code]/note-view";
 import { DiaryStylesApplier } from "@/components/controls/diary-styles-applier";
+import { ContentBlockLayout } from "@/components/layout/content-block-layout";
 import { decodeId } from "@/lib/hash-utils";
 import { getDiaryProperties } from "@/services/methods/user/diaries";
 import { getDiaryNote } from "@/services/methods/user/server-notes";
@@ -19,11 +20,9 @@ export default async function Page({
   }
 
   return (
-    <div className="flex h-full flex-col items-center justify-center">
-      <div className="min-h-[80vh] min-w-[1200px] rounded-2xl bg-background p-8">
-        <NoteView serverNote={note} noteId={noteId} />
-        <DiaryStylesApplier properties={properties} />
-      </div>
-    </div>
+    <ContentBlockLayout>
+      <NoteView serverNote={note} noteId={noteId} />
+      <DiaryStylesApplier properties={properties} />
+    </ContentBlockLayout>
   );
 }
