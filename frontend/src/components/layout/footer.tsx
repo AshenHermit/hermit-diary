@@ -4,7 +4,7 @@ import Link from "next/link";
 export function Footer() {
   return (
     <div className="glass">
-      <div className="layout grid grid-cols-3 items-center justify-center py-4">
+      <div className="layout grid grid-cols-3 items-center justify-center gap-4 py-4 max-md:grid-cols-1">
         <Link
           href={"https://github.com/AshenHermit/hermit-diary"}
           target="_blank"
@@ -21,7 +21,7 @@ export function Footer() {
           href={"https://github.com/AshenHermit/hermit-diary/issues/new"}
           target="_blank"
         >
-          <div className="flex items-center justify-center gap-4 text-sm opacity-50">
+          <div className="flex items-center justify-center gap-4 text-center text-sm opacity-50">
             Сообщить о проблеме или предложить идею
           </div>
         </Link>
