@@ -12,8 +12,7 @@ const dialogVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "border border-neutral-500 bg-white dark:border-neutral-900 dark:bg-neutral-950 dark:text-white",
+        default: "border bg-white dark:bg-neutral-950 dark:text-white",
       },
       position: {
         default:
@@ -83,8 +82,8 @@ const DialogContent = React.forwardRef<
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-3 top-3 rounded-full opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-neutral-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-neutral-100 data-[state=open]:text-neutral-500 dark:ring-offset-neutral-950 dark:focus:ring-neutral-300 dark:data-[state=open]:bg-neutral-800 dark:data-[state=open]:text-neutral-400 sm:right-6 sm:top-6 md:right-9 md:top-9">
-          <X className="size-4" />
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
