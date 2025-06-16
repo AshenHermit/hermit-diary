@@ -128,4 +128,8 @@ mark {
   body {
     @apply bg-background text-foreground;
   }
+
+  .iframe-container iframe {
+    width: 100%;
+  }
 }

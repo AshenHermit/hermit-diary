@@ -69,6 +69,7 @@ export default function RichContentEditor({
   }, [editor]);
 
   const [html, setHTML] = React.useState<string | null>(null);
+
   React.useEffect(() => {
     (async () => {
       if (blocks && readOnly) {

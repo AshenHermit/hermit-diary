@@ -18,3 +18,7 @@
     }
   }
 }
+
+.bn-file-block-content-wrapper {
+  max-width: var(--editor-width);
+}

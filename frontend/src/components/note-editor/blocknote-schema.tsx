@@ -1,6 +1,5 @@
-import { NotePicker } from "@/components/controls/note-picker";
-import { Button } from "@/components/ui/button";
-import { DiaryNote } from "@/services/types/notes";
+import { createEmbedBlock } from "@/components/note-editor/blocks/embed-code";
+import { createNoteReferenceBlock } from "@/components/note-editor/blocks/note-reference";
 import {
   defaultProps,
   BlockNoteSchema,
@@ -12,45 +11,7 @@ import {
   createReactBlockSpec,
   getDefaultReactSlashMenuItems,
 } from "@blocknote/react";
-import { LinkIcon } from "lucide-react";
-
-function NoteReferenceComponent({
-  readOnly,
-  onChange,
-  note,
-  diaryId,
-  onNoteLinkUsed,
-}: {
-  diaryId?: number;
-  readOnly?: boolean;
-  note?: DiaryNote;
-  onChange: (value: DiaryNote) => void;
-  onNoteLinkUsed?: (noteId: number) => void;
-}) {
-  if (readOnly) {
-    return (
-      <Button
-        variant="secondary"
-        onClick={() => {
-          note && onNoteLinkUsed ? onNoteLinkUsed(note.id) : undefined;
-        }}
-      >
-        {note ? note.name : null}
-      </Button>
-    );
-  }
-  return (
-    <div className="rounded-xl bg-secondary px-2">
-      <NotePicker
-        value={note ? note : null}
-        onValueChange={(val) => {
-          onChange(val);
-        }}
-        diaryId={diaryId}
-      />
-    </div>
-  );
-}
+import { CodeIcon, LinkIcon } from "lucide-react";
 
 export function createEditorSchema({
   diaryId,
@@ -59,59 +20,40 @@ export function createEditorSchema({
   diaryId?: number;
   onNoteLinkUsed?: (noteId: number) => void;
 }) {
-  const noteReferenceBlock = createReactBlockSpec(
-    {
-      type: "noteReference",
-      propSchema: {
-        textAlignment: defaultProps.textAlignment,
-        textColor: defaultProps.textColor,
-        note: {
-          default: undefined,
-          type: "string",
-        },
-      },
-      content: "none",
-    },
-    {
-      render: (props) => (
-        <NoteReferenceComponent
-          onNoteLinkUsed={onNoteLinkUsed}
-          readOnly={!props.editor.isEditable}
-          note={
-            props.block.props.note ? JSON.parse(props.block.props.note) : null
-          }
-          diaryId={diaryId}
-          onChange={(val) => {
-            props.editor.updateBlock(props.block, {
-              props: { note: JSON.stringify(val) },
-            });
-          }}
-        />
-      ),
-    },
-  );
+  const noteReferenceBlock = createNoteReferenceBlock(diaryId, onNoteLinkUsed);
+  const embedBlock = createEmbedBlock();
 
   const schema = BlockNoteSchema.create({
     blockSpecs: {
       ...defaultBlockSpecs,
-      noteReference: noteReferenceBlock,
+      noteReference: noteReferenceBlock.spec,
+      embed: embedBlock.spec,
     },
   });
 
-  const insertNoteRef = (editor: typeof schema.BlockNoteEditor) => ({
-    title: "Note Reference",
-    subtext: "Create link to another note",
+  const insertBlockEl = (
+    editor: typeof schema.BlockNoteEditor,
+    props: {
+      id: keyof typeof schema.blockSchema;
+      title: string;
+      description: string;
+      aliases: string[];
+      icon: React.ReactElement;
+    },
+  ) => ({
+    title: props.title,
+    subtext: props.description,
     onItemClick: () =>
       // If the block containing the text caret is empty, `insertOrUpdateBlock`
       // changes its type to the provided block. Otherwise, it inserts the new
       // block below and moves the text caret to it. We use this function with an
       // Alert block.
       insertOrUpdateBlock(editor, {
-        type: "noteReference",
+        type: props.id,
       }),
-    aliases: ["diary", "link", "note", "ref", "reference"],
+    aliases: props.aliases,
     group: "Basic blocks",
-    icon: <LinkIcon />,
+    icon: props.icon,
   });
 
   const suggestionMenuProcessor = (editor: typeof schema.BlockNoteEditor) => {
@@ -123,7 +65,23 @@ export function createEditorSchema({
         (item) => item.group === "Basic blocks",
       );
       // Inserts the Alert item as the last item in the "Basic blocks" group.
-      defaultItems.splice(lastBasicBlockIndex + 1, 0, insertNoteRef(editor));
+      const blocksToInsert = [
+        insertBlockEl(editor, {
+          id: "noteReference",
+          title: "Note Reference",
+          description: "Create link to another note",
+          aliases: ["diary", "link", "note", "ref", "reference"],
+          icon: <LinkIcon />,
+        }),
+        insertBlockEl(editor, {
+          id: "embed",
+          title: "Embed Code",
+          description: "Insert Embed Code",
+          aliases: ["embed", "code", "video", "html"],
+          icon: <CodeIcon />,
+        }),
+      ];
+      defaultItems.splice(lastBasicBlockIndex + 1, 0, ...blocksToInsert);
 
       // Returns filtered items based on the query.
       return filterSuggestionItems(defaultItems, query);
