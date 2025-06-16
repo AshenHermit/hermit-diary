@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import React, { Suspense } from "react";
 import "@/styles/global.css";
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/mantine/style.css";
 import classNames from "classnames";
 
 import { Montserrat, Roboto_Slab } from "next/font/google";
