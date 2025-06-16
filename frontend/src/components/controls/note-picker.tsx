@@ -61,12 +61,8 @@ export function NotePicker({
             {notes.map((note) => (
               <CommandItem
                 key={note.id}
-                value={note.id.toString()}
-                onSelect={(value) =>
-                  onValueChange(
-                    notes.filter((x) => x.id.toString() == value)[0],
-                  )
-                }
+                value={note.name}
+                onSelect={(value) => onValueChange(note)}
               >
                 {note.name}
                 <Check

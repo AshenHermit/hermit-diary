@@ -53,7 +53,7 @@ export default function Page() {
       });
     }
     await loadNotes();
-    onSelectedNote(newNote);
+    setTimeout(() => onSelectedNote(newNote), 1);
   }, [loadNotes, diaryId, currentView]);
 
   const setTimeCircleView = useViewsStore((state) => state.setTimeCircleView);

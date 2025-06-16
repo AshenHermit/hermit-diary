@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
+import classNames from "classnames";
 
 export type EmbedBlockConfig = {
   type: string;
@@ -72,7 +73,12 @@ export function EmbedBlockComponent(
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
-            className="absolute left-2 top-2 h-8 w-8 p-0"
+            className={classNames(
+              "absolute left-2 top-2 h-8 w-8 bg-muted/80 p-0",
+              {
+                hidden: !props.editor.isEditable,
+              },
+            )}
             variant={"ghost"}
           >
             <EditIcon />

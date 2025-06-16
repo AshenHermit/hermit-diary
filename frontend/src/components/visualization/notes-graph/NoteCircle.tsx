@@ -1,5 +1,6 @@
 "use client";
 
+import { clamp, mod } from "@/lib/math-utils";
 import { DiaryNote, getNoteProps } from "@/services/types/notes";
 import Konva from "konva";
 import React, { forwardRef } from "react";
@@ -11,6 +12,7 @@ export type NoteCircleProps = {
   onSelected?: (note: DiaryNote) => void;
   accentColor?: string;
   draggable?: boolean;
+  titleType?: "default" | "vertical";
 };
 export type NoteCirlceApi = Konva.Group & {
   vx: number;
@@ -19,6 +21,7 @@ export type NoteCirlceApi = Konva.Group & {
   disabled: boolean;
   note: DiaryNote;
   setCircleSize: (size: number) => void;
+  setCircleRotation: (rotation: number) => void;
 };
 
 export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
@@ -29,6 +32,7 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
       onSelected,
       accentColor,
       draggable = true,
+      titleType = "default",
     }: NoteCircleProps,
     ref,
   ) => {
@@ -36,11 +40,43 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
     const groupRef = React.useRef<NoteCirlceApi>(null);
     const circleRef = React.useRef<Konva.Circle>(null);
     const textRef = React.useRef<Konva.Text>(null);
+    const [textReverse, setTextReverse] = React.useState(false);
 
-    const setSize = React.useCallback((size: number) => {
-      if (groupRef.current) groupRef.current.radius = size;
-      if (circleRef.current) circleRef.current.radius(size);
-      if (textRef.current) textRef.current.y(-500 - size - 5);
+    const updateText = React.useCallback((textReverse: boolean) => {
+      if (groupRef.current) {
+        const size = groupRef.current.radius;
+        if (textRef.current && titleType == "default")
+          textRef.current.y(-500 - size - 5);
+        if (textRef.current && titleType == "vertical") {
+          textRef.current.x(size + 10);
+          if (textReverse) {
+            textRef.current.x(-500 - 10 - size);
+          }
+        }
+      }
+    }, []);
+
+    const setSize = React.useCallback(
+      (size: number) => {
+        if (groupRef.current) groupRef.current.radius = size;
+        if (circleRef.current) circleRef.current.radius(size);
+        updateText(textReverse);
+      },
+      [textReverse],
+    );
+
+    const setRotation = React.useCallback((rotation: number) => {
+      if (groupRef.current) {
+        if (rotation >= 90 || rotation <= -90) {
+          groupRef.current.rotation(rotation - 180);
+          setTextReverse(true);
+          updateText(true);
+        } else if (rotation < 90 && rotation > -90) {
+          groupRef.current.rotation(rotation);
+          setTextReverse(false);
+          updateText(false);
+        }
+      }
     }, []);
 
     React.useImperativeHandle(ref, () => {
@@ -55,6 +91,7 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
         groupRef.current.note = note;
         groupRef.current.disabled = false;
         groupRef.current.setCircleSize = setSize;
+        groupRef.current.setCircleRotation = setRotation;
       }
     }, [note.id]);
 
@@ -124,18 +161,38 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
 
     return (
       <Group ref={groupRef} draggable={draggable} x={0} y={0}>
-        <Text
-          ref={textRef}
-          x={-50}
-          y={-500 - noteProps.size - 5}
-          width={100}
-          height={500}
-          align="center"
-          verticalAlign="bottom"
-          text={noteTitle}
-          fill={"white"}
-          hitFunc={() => false}
-        />
+        {titleType == "default" ? (
+          <Text
+            ref={textRef}
+            x={-50}
+            y={-500 - noteProps.size - 5}
+            width={100}
+            height={500}
+            align={"center"}
+            verticalAlign={"bottom"}
+            text={noteTitle}
+            fill={"white"}
+            hitFunc={() => false}
+          />
+        ) : null}
+        {titleType == "vertical" ? (
+          <Text
+            ref={textRef}
+            x={noteProps.size + 10}
+            y={-6}
+            width={500}
+            height={100}
+            rotation={0}
+            align={textReverse ? "right" : "left"}
+            verticalAlign={"center"}
+            text={noteTitle}
+            fill={color}
+            fontSize={15}
+            fontFamily="monospace"
+            fontStyle="bold"
+            hitFunc={() => false}
+          />
+        ) : null}
         <Circle
           ref={circleRef}
           x={0}

@@ -379,36 +379,38 @@ export function PropertiesEditor({
 
   return (
     <div className="flex w-full flex-col gap-4">
-      {Object.keys(value).map((key) => {
-        if (!(key in options)) return null;
-        const opt = options[key];
-        const Component = opt.type.component;
-        return (
-          <div key={key} className="grid grid-cols-[1.5fr_1fr_auto] gap-4">
-            <div className="flex w-max items-center gap-2 whitespace-nowrap">
-              {opt.type.icon}
-              {opt.title}
-            </div>
-            <div className="flex w-full flex-col justify-center">
-              <Component
-                readOnly={!editMode}
-                type={opt.type}
-                value={value[key]}
-                key={key}
-                onValueChange={(val) => onPropChange(key, val)}
-                {...opt.props}
-              />
-            </div>
-            {editMode ? (
-              <div>
-                <Button variant="ghost" onClick={() => deleteProp(key)}>
-                  <XIcon />
-                </Button>
+      {!value
+        ? null
+        : Object.keys(value).map((key) => {
+            if (!(key in options)) return null;
+            const opt = options[key];
+            const Component = opt.type.component;
+            return (
+              <div key={key} className="grid grid-cols-[1.5fr_1fr_auto] gap-4">
+                <div className="flex w-max items-center gap-2 whitespace-nowrap">
+                  {opt.type.icon}
+                  {opt.title}
+                </div>
+                <div className="flex w-full flex-col justify-center">
+                  <Component
+                    readOnly={!editMode}
+                    type={opt.type}
+                    value={value[key]}
+                    key={key}
+                    onValueChange={(val) => onPropChange(key, val)}
+                    {...opt.props}
+                  />
+                </div>
+                {editMode ? (
+                  <div>
+                    <Button variant="ghost" onClick={() => deleteProp(key)}>
+                      <XIcon />
+                    </Button>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-        );
-      })}
+            );
+          })}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button className="w-full text-2xl" variant={"outline"}>

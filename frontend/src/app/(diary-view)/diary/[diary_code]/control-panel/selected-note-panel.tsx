@@ -35,13 +35,13 @@ import { ArrowDownRight, ArrowUpLeft, BoltIcon, LinkIcon } from "lucide-react";
 import React from "react";
 
 export function SelectedNotePanel() {
+  const notes = useDiaryStore((state) => state.notes);
   const loadNotes = useDiaryStore((state) => state.loadNotes);
   const forceUpdateNotes = useDiaryStore((state) => state.forceUpdateNotes);
+  const diaryTab = useDiaryStore((state) => state.currentTab);
+  const writePermission = useDiaryStore((state) => state.writePermission);
   const selectedNote = useDiaryStore((state) => state.selectedNote);
   const setSelectedNote = useDiaryStore((state) => state.setSelectedNote);
-  const notes = useDiaryStore((state) => state.notes);
-  const writePermission = useDiaryStore((state) => state.writePermission);
-  const diaryTab = useDiaryStore((state) => state.currentTab);
 
   const [editMode, setEditMode] = React.useState(writePermission);
   const { note } = useDiaryNote(selectedNote?.id, [notes]);
@@ -262,14 +262,16 @@ function PropertiesSection({
 
   return (
     <div>
-      <PropertiesEditor
-        forceUpdate={forceUpdate}
-        onValueChange={onChange}
-        options={options}
-        value={note.properties}
-        key={note.id}
-        editMode={writePermission}
-      />
+      {selectedNote && selectedNote.properties ? (
+        <PropertiesEditor
+          forceUpdate={forceUpdate}
+          onValueChange={onChange}
+          options={options}
+          value={selectedNote.properties}
+          key={selectedNote.id}
+          editMode={writePermission}
+        />
+      ) : null}
     </div>
   );
 }

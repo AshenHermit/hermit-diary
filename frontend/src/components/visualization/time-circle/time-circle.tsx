@@ -43,7 +43,9 @@ export type NotesCircleProps = {
 };
 
 function getCircleRadius(stage: Konva.Stage) {
-  return (Math.min(stage.height(), stage.width()) * 0.3) / stage.scale().x;
+  let minLength = Math.min(stage.height(), stage.width());
+  if (minLength > 600) minLength -= 100;
+  return (minLength * 0.3) / stage.scale().x;
 }
 
 export function useCreateTimeCircleState(notes: DiaryNote[]) {
@@ -237,6 +239,8 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
 
         node.x(x);
         node.y(y);
+
+        node.setCircleRotation(Math.atan2(y, x) * (180 / Math.PI));
       },
       [activeNoteId],
     );
@@ -289,6 +293,11 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
                       note={note}
                       accentColor={accentColor}
                       active={note.id == activeNoteId}
+                      titleType={
+                        note.properties.timePosition !== undefined
+                          ? "vertical"
+                          : "default"
+                      }
                       onSelected={handleNoteSelection}
                       draggable={false}
                     />,
