@@ -3,6 +3,7 @@ import { NoteContentEditor } from "@/components/note-editor/note-content-editor"
 import RichContentEditor from "@/components/note-editor/rich-content-editor";
 import { getDiaryNote } from "@/services/methods/user/notes";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function Page() {
   const note = await getDiaryNote(48);
@@ -13,11 +14,13 @@ export default async function Page() {
       }}
     >
       <div className="text-lg font-semibold">О проекте</div>
-      <RichContentEditor
-        diaryId={note.diary.id}
-        defaultValue={note.content}
-        readOnly
-      />
+      <Suspense>
+        <RichContentEditor
+          diaryId={note.diary.id}
+          defaultValue={note.content}
+          readOnly
+        />
+      </Suspense>
     </ContentBlockLayout>
   );
 }

@@ -1,7 +1,5 @@
 "use client";
 
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
 import { useNoteStore } from "@/components/note-editor/note-store";
 import React from "react";
 import { updateDiaryNote } from "@/services/methods/user/notes";

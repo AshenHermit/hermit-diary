@@ -1,4 +1,6 @@
 "use client";
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/mantine/style.css";
 import { createEditorSchema } from "@/components/note-editor/blocknote-schema";
 import { useRequestHandler } from "@/hooks/use-request-handler";
 import { uploadFile } from "@/services/methods/files/upload-file";
