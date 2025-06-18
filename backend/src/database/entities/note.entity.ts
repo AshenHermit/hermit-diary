@@ -6,11 +6,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Diary } from './diary.entity';
+import { NoteArtefact } from './note-artefact.entity';
 
 @Entity()
 export class Note {
@@ -18,14 +20,14 @@ export class Note {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ description: 'date diary created at' })
+  @ApiProperty({ description: 'date note created at' })
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   public createdAt: Date;
 
-  @ApiProperty({ description: 'date diary updated at' })
+  @ApiProperty({ description: 'date note updated at' })
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
@@ -58,6 +60,9 @@ export class Note {
 
   @ManyToOne(() => Diary, (diary) => diary.notes, { onDelete: 'CASCADE' })
   diary: Diary;
+
+  @OneToMany(() => NoteArtefact, (artefact) => artefact.note, { cascade: true })
+  artefacts: NoteArtefact[];
 
   @ManyToMany(() => Note, (note) => note.incomingLinks, { cascade: true })
   @JoinTable()

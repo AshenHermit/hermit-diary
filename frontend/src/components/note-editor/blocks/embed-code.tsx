@@ -26,6 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import classNames from "classnames";
+import { EmbedBlockEditControl } from "@/components/controls/embed-code-edit-control";
 
 export type EmbedBlockConfig = {
   type: string;
@@ -52,26 +53,26 @@ export function EmbedBlockComponent(
     "contentRef"
   >,
 ) {
-  const [open, setOpen] = React.useState(false);
-  const [inputText, setInputText] = React.useState(
-    props.block.props.embedCode ?? "",
+  const applyEmbeddingCode = React.useCallback(
+    (code: string) => {
+      props.editor.updateBlock(props.block, {
+        props: { embedCode: code as any },
+      });
+    },
+    [props.block, props.editor],
   );
 
-  const applyEmbeddingCode = React.useCallback(() => {
-    props.editor.updateBlock(props.block, {
-      props: { embedCode: inputText as any },
-    });
-    setOpen(false);
-  }, [inputText]);
-
   return (
-    <div className="relative min-h-32 w-full bg-muted">
+    <div className="relative min-h-32 w-full rounded-lg bg-muted">
       <div
         className="iframe-container w-full"
         dangerouslySetInnerHTML={{ __html: props.block.props.embedCode }}
       ></div>
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+      <EmbedBlockEditControl
+        initValue={props.block.props.embedCode}
+        onApply={applyEmbeddingCode}
+      >
+        {() => (
           <Button
             className={classNames(
               "absolute left-2 top-2 h-8 w-8 bg-muted/80 p-0",
@@ -83,27 +84,8 @@ export function EmbedBlockComponent(
           >
             <EditIcon />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="flex w-96 flex-col gap-1">
-          <Textarea
-            ref={(textarea) => {
-              if (textarea) {
-                textarea.style.height = "0px";
-                textarea.style.height = textarea.scrollHeight + "px";
-              }
-            }}
-            value={inputText}
-            onChangeCapture={(e) => setInputText(e.currentTarget.value)}
-          ></Textarea>
-          <Button
-            className="w-full"
-            variant={"secondary"}
-            onClick={applyEmbeddingCode}
-          >
-            OK
-          </Button>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        )}
+      </EmbedBlockEditControl>
     </div>
   );
 }

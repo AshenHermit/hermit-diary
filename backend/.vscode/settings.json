@@ -1,3 +1,8 @@
 {
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "folder-color.pathColors": [
+    {
+      "folderPath": "backend\\src\\database\\entities\\diary.entity.ts\\"
+    }
+  ]
 }
