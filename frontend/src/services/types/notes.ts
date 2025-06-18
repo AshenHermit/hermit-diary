@@ -26,8 +26,22 @@ export type RichContentData = {
   blocks: Record<string, any>[];
 };
 
+export type Artefact = {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  content: RichContentData | null;
+  embedCode: string | null;
+};
+export type ArtefactUpdateDTO = {
+  content?: RichContentData | null;
+  embedCode?: string | null;
+  noteId?: number;
+};
+
 export type VerboseNote = GlobalNote & {
   content: RichContentData;
+  artefacts: Artefact[];
 };
 
 export type NoteProperties = {

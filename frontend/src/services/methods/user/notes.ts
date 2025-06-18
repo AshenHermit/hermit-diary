@@ -1,5 +1,10 @@
 import { Diary } from "@/services/types/diary";
-import { DiaryNote, VerboseNote } from "@/services/types/notes";
+import {
+  Artefact,
+  ArtefactUpdateDTO,
+  DiaryNote,
+  VerboseNote,
+} from "@/services/types/notes";
 import { apiClient } from "@/services/api-client/client-api";
 import { NoteSearchResult } from "@/services/types/search";
 
@@ -64,4 +69,31 @@ export async function updateDiaryNote(note: Partial<VerboseNote>) {
 
 export async function deleteDiaryNote(note: DiaryNote) {
   return await apiClient.delete<boolean, {}>(`notes/${note.id}`);
+}
+
+export async function addNoteArtefact(
+  noteId: number,
+  data: Partial<ArtefactUpdateDTO>,
+) {
+  return await apiClient.post<Artefact, Partial<ArtefactUpdateDTO>>(
+    `notes/${noteId}/artefacts`,
+    data,
+  );
+}
+
+export async function updateNoteArtefact(
+  noteId: number,
+  artefactId: number,
+  data: Partial<ArtefactUpdateDTO>,
+) {
+  return await apiClient.patch<boolean, Partial<ArtefactUpdateDTO>>(
+    `notes/${noteId}/artefacts/${artefactId}`,
+    data,
+  );
+}
+
+export async function deleteNoteArtefact(noteId: number, artefactId: number) {
+  return await apiClient.delete<boolean, {}>(
+    `notes/${noteId}/artefacts/${artefactId}`,
+  );
 }

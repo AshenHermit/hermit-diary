@@ -28,9 +28,17 @@ export function DiaryStylesApplier({
           document.body.style.setProperty(varName, value);
           if (value.indexOf(".") != -1)
             document.body.style.setProperty(varName, `url(${value})`);
+        } else if (propertiesToCss[key]) {
+          const varName = propertiesToCss[key];
+          document.body.style.removeProperty(varName);
         }
       },
     );
+    return () => {
+      for (const [key, varName] of Object.entries(propertiesToCss)) {
+        if (varName) document.body.style.removeProperty(varName);
+      }
+    };
   }, [properties]);
 
   return null;

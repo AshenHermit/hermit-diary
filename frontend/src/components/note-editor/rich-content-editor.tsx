@@ -17,6 +17,7 @@ export type RichContentEditorProps = {
   className?: string;
   diaryId?: number;
   onNoteLinkUsed?: (noteId: number) => void;
+  trailingBlock?: boolean;
 };
 
 export default function RichContentEditor({
@@ -26,6 +27,7 @@ export default function RichContentEditor({
   className,
   diaryId,
   onNoteLinkUsed,
+  trailingBlock,
 }: RichContentEditorProps) {
   const [blocks, setBlocks] = React.useState<Record<string, any>[]>(
     defaultValue?.blocks ? defaultValue?.blocks : [],
@@ -37,9 +39,11 @@ export default function RichContentEditor({
   );
   const editor = useCreateBlockNote({
     schema: schema,
+    sideMenuDetection: "editor",
     initialContent: Array.isArray(defaultValue?.blocks)
       ? defaultValue?.blocks
       : undefined,
+    trailingBlock: trailingBlock,
     uploadFile: async (file: File) => {
       const res = await uploadFile(file);
       if (res) return res?.url;

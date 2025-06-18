@@ -150,5 +150,5 @@ export function useDiaryNote(noteId: number | undefined, dependencies: any[]) {
     loadNote();
   }, [loadNote, ...dependencies]);
 
-  return { note };
+  return { note, loadNote };
 }

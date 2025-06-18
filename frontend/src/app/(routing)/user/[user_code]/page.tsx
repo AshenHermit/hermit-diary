@@ -1,20 +1,13 @@
-import { NoteView } from "@/app/(routing)/note/[note_code]/note-view";
-import { DiaryStylesApplier } from "@/components/controls/diary-styles-applier";
 import { ContentBlockLayout } from "@/components/layout/content-block-layout";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { decodeId } from "@/lib/hash-utils";
 import { makeLinkToDiary } from "@/lib/url-utils";
-import {
-  getDiaryProperties,
-  getUserDiaries,
-} from "@/services/methods/user/diaries";
-import { getDiaryNote } from "@/services/methods/user/server-notes";
+import { getUserDiaries } from "@/services/methods/user/diaries";
 import { getUser } from "@/services/methods/user/users-server";
 import { Diary } from "@/services/types/diary";
 import { CircleDotDashed } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export default async function Page({
   params,

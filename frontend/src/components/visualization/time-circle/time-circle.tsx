@@ -289,7 +289,10 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
                 .map((note) => {
                   return [
                     <NoteCircle
-                      key={note.id}
+                      key={
+                        note.id +
+                        `${note.properties.timePosition !== undefined}`
+                      }
                       note={note}
                       accentColor={accentColor}
                       active={note.id == activeNoteId}

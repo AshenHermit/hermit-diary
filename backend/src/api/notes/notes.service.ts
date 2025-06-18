@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -72,8 +73,9 @@ export class NotesService {
     if (!note || user.id != note.diary.user.id)
       throw new UnauthorizedException('no access');
   }
-  async assertNoteReadAccess(user: User | undefined, note: Note) {
-    if (note.isPublic) return;
+  async assertNoteReadAccess(user: User | undefined, noteId: number) {
+    const note = await this.getByIdForUser(noteId, user);
+    if (!note) throw new BadRequestException('no access');
     if (user) {
       if (user.id == note.diary.user.id) return;
     }
@@ -98,6 +100,9 @@ export class NotesService {
       query = query.innerJoin('note.diary', 'diary');
     } else {
       query = query.innerJoinAndSelect('note.diary', 'diary');
+    }
+    if (verbose) {
+      query.leftJoinAndSelect('note.artefacts', 'artefacts');
     }
     query = query.leftJoinAndSelect('note.outcomingLinks', 'outcomingLink');
     query = query.leftJoinAndSelect('note.incomingLinks', 'incomingLink');

@@ -1,5 +1,6 @@
 "use client";
 
+import { ArtefactsPanel } from "@/app/(diary-view)/diary/[diary_code]/control-panel/artefacts-panel";
 import { InfoPanel } from "@/app/(diary-view)/diary/[diary_code]/control-panel/info-panel";
 import { NotesManager } from "@/app/(diary-view)/diary/[diary_code]/control-panel/notes-manager";
 import { SelectedNotePanel } from "@/app/(diary-view)/diary/[diary_code]/control-panel/selected-note-panel";
@@ -12,6 +13,7 @@ import { decodeId, encodeId } from "@/lib/hash-utils";
 import { useUserStore } from "@/store/user-store";
 import classNames from "classnames";
 import {
+  CassetteTapeIcon,
   CircleDotDashedIcon,
   FolderTreeIcon,
   InfoIcon,
@@ -41,6 +43,13 @@ const tabsRaw = [
     icon: FolderTreeIcon,
     writePermission: false,
     content: NotesManager,
+  },
+  {
+    key: "artefacts",
+    name: "artefacts",
+    icon: CassetteTapeIcon,
+    writePermission: false,
+    content: ArtefactsPanel,
   },
   {
     key: "settings",

@@ -128,8 +128,18 @@ mark {
   body {
     @apply bg-background text-foreground;
   }
-
+  .iframe-container {
+    overflow: hidden;
+    @apply rounded-lg;
+  }
+  .bn-block-outer {
+    @apply rounded-lg;
+  }
   .iframe-container iframe {
     width: 100%;
+  }
+
+  span[data-background-color] {
+    @apply rounded-xl;
   }
 }
