@@ -26,9 +26,15 @@ export function ArtefactsPanel() {
   const selectedNote = useDiaryStore((state) => state.selectedNote);
   const setSelectedNote = useDiaryStore((state) => state.setSelectedNote);
   const writePermission = useDiaryStore((state) => state.writePermission);
+  const forceUpdateNotes = useDiaryStore((state) => state.forceUpdateNotes);
 
   const [editMode, setEditMode] = React.useState(writePermission);
   const { note, loadNote } = useDiaryNote(selectedNote?.id, [notes]);
+
+  const updateNote = React.useCallback(async () => {
+    await loadNote();
+    forceUpdateNotes(notes);
+  }, [notes]);
 
   return (
     <DiaryTabPanel className="">
@@ -36,7 +42,7 @@ export function ArtefactsPanel() {
         <ArtefactsList
           note={note}
           editable={writePermission}
-          reloadNote={loadNote}
+          reloadNote={updateNote}
         />
       ) : (
         <div className="text-center">no note selected</div>
@@ -205,5 +211,22 @@ export function AddArtefactButton({
         </>
       )}
     </Button>
+  );
+}
+
+export function ArtefactBadge() {
+  const notes = useDiaryStore((state) => state.notes);
+  const selectedNote = useDiaryStore((state) => state.selectedNote);
+  const setSelectedNote = useDiaryStore((state) => state.setSelectedNote);
+  const writePermission = useDiaryStore((state) => state.writePermission);
+  const { note, loadNote } = useDiaryNote(selectedNote?.id, [notes]);
+
+  if (!note || note.artefacts.length == 0) return null;
+  return (
+    <>
+      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-center text-xs font-bold text-black max-md:-mt-3 md:-ml-3">
+        {note.artefacts.length}
+      </div>
+    </>
   );
 }

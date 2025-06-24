@@ -104,8 +104,10 @@ const createDiaryStore = () => {
       async loadNotes() {
         try {
           const notes = await getDiaryNotes(get().id);
-          set({ notes });
-        } catch (e) {}
+          set({ notes: [...notes] });
+        } catch (e) {
+          console.error(e);
+        }
       },
       async loadProperties() {
         try {
@@ -120,7 +122,7 @@ const createDiaryStore = () => {
 };
 export type HeaderStore = ReturnType<typeof createDiaryStore>;
 
-const DiaryStoreContext = React.createContext<HeaderStore | null>(null);
+export const DiaryStoreContext = React.createContext<HeaderStore | null>(null);
 
 export function DiaryStoreProvider({ children }: React.PropsWithChildren) {
   const [state] = React.useState(() => createDiaryStore());
@@ -134,7 +136,8 @@ export function DiaryStoreProvider({ children }: React.PropsWithChildren) {
 export function useDiaryStore<T>(selector: (state: DiaryProps) => T): T {
   const store = React.useContext(DiaryStoreContext);
   if (!store) throw new Error("Missing DiaryStoreContext.Provider in the tree");
-  return useStore(store, selector);
+  const res = useStore(store, selector);
+  return res;
 }
 
 export function useDiaryNote(noteId: number | undefined, dependencies: any[]) {

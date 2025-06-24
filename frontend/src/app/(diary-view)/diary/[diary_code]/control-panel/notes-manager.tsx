@@ -37,6 +37,7 @@ import {
   updateDiaryNote,
 } from "@/services/methods/user/notes";
 import { DiaryNote } from "@/services/types/notes";
+import classNames from "classnames";
 import {
   ChevronsUpDownIcon,
   CirclePlusIcon,
@@ -113,16 +114,9 @@ export function NotesManager() {
         <DragItemsContainer>
           {() => (
             <>
-              <div className="flex flex-col justify-stretch rounded-xl bg-black p-4">
-                <NoteTree
-                  treeItems={treeRoots}
-                  level={0}
-                  key={JSON.stringify(notes)}
-                />
+              <div className="flex flex-col justify-stretch gap-1 rounded-xl bg-black p-4">
+                <NoteTree treeItems={treeRoots} level={0} />
               </div>
-              {/* {notes.map((note) => (
-              <NoteItem note={note} key={note.id} />
-            ))} */}
               <FreeSpaceArea />
               <Button onClick={addNote} variant={"ghost"}>
                 <CirclePlusIcon width={16} />
@@ -148,7 +142,7 @@ export function NoteTree({
 
   return treeItems.map((treeItem) => (
     <TreeItemComponent
-      key={treeItem.id + " " + treeItems.length}
+      key={treeItem.id}
       level={level}
       treeItem={treeItem}
       reparentNote={reparentNote}
@@ -173,27 +167,36 @@ function TreeItemComponent({
       key={treeItem.id}
       ref={itemRef}
     >
-      <Collapsible className="w-[350px]" key={JSON.stringify(treeItem)}>
-        <DragItem
-          data={treeItem}
-          onDataDropped={(data) => reparentNote(data, treeItem)}
-          itemRef={itemRef}
-        >
-          <NoteItem note={treeItem} style={{ marginLeft: level * 2 + "rem" }} />
-        </DragItem>
-        {treeItem.children.length > 0 ? (
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm">
-              <ChevronsUpDownIcon className="h-4 w-4" />
-              <span className="sr-only">Toggle</span>
-            </Button>
-          </CollapsibleTrigger>
-        ) : null}
-        <CollapsibleContent className="flex flex-col justify-stretch gap-1 pt-1">
+      <Collapsible className="w-[350px]">
+        <div className="flex items-center gap-2">
+          <DragItem
+            data={treeItem}
+            onDataDropped={(data) => reparentNote(data, treeItem)}
+            itemRef={itemRef}
+          >
+            <NoteItem
+              note={treeItem}
+              style={{ marginLeft: level * 2 + "rem" }}
+            />
+          </DragItem>
           {treeItem.children.length > 0 ? (
-            <NoteTree level={level + 1} treeItems={treeItem.children} />
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <ChevronsUpDownIcon className="h-4 w-4" />
+                <span className="sr-only">Toggle</span>
+              </Button>
+            </CollapsibleTrigger>
           ) : null}
-        </CollapsibleContent>
+        </div>
+        {treeItem.children.length > 0 ? (
+          <CollapsibleContent className="">
+            <div className="flex flex-col justify-stretch gap-1 py-1">
+              {treeItem.children.length > 0 ? (
+                <NoteTree level={level + 1} treeItems={treeItem.children} />
+              ) : null}
+            </div>
+          </CollapsibleContent>
+        ) : null}
       </Collapsible>
     </div>
   );
@@ -303,10 +306,9 @@ function useAddNote() {
 
 function FreeSpaceArea() {
   const addNewNote = useAddNote();
-
   const notes = useDiaryStore((state) => state.notes);
-
   const reparentNote = useReparentNote(notes);
+  const [isHovered, setIsHovered] = React.useState(false);
 
   return (
     <ContextMenu>
@@ -314,8 +316,14 @@ function FreeSpaceArea() {
         data={null}
         draggable={false}
         onDataDropped={(data) => reparentNote(data, null)}
+        onHoverStateChange={setIsHovered}
       >
-        <ContextMenuTrigger className="flex h-full min-h-24 items-center justify-center rounded-xl bg-black"></ContextMenuTrigger>
+        <ContextMenuTrigger
+          className={classNames(
+            "flex h-full min-h-24 items-center justify-center rounded-xl bg-black",
+            { "border-2 border-dashed border-border bg-black/50": isHovered },
+          )}
+        ></ContextMenuTrigger>
       </DragItem>
       <ContextMenuContent>
         <ContextMenuItem className="cursor-pointer gap-2" onClick={addNewNote}>

@@ -82,22 +82,20 @@ export function SelectedNotePanel() {
   if (note) {
     return (
       <DiaryTabPanel className="grid h-full grid-rows-[1fr_auto]">
-        {diaryTab == "note" ? (
-          <NoteFrame
-            note={note}
-            config={{
-              canEdit: writePermission,
-              onNoteUpdate: () => loadNotes(),
-              editMode,
-              defaultEditMode: editMode,
-              setEditMode,
-              onNoteLinkUsed: onLink,
-              classNames: {
-                title: "!text-2xl font-bold",
-              },
-            }}
-          />
-        ) : null}
+        <NoteFrame
+          note={note}
+          config={{
+            canEdit: writePermission,
+            onNoteUpdate: () => loadNotes(),
+            editMode,
+            defaultEditMode: editMode,
+            setEditMode,
+            onNoteLinkUsed: onLink,
+            classNames: {
+              title: "!text-2xl font-bold",
+            },
+          }}
+        />
 
         <Accordion type="multiple">
           <AccordionItem value="references">
