@@ -31,6 +31,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRequestHandler } from "@/hooks/use-request-handler";
+import { encodeId, encodeText, hashCode } from "@/lib/hash-utils";
 import {
   addDiaryNote,
   deleteDiaryNote,
@@ -106,24 +107,25 @@ export function NotesManager() {
   const treeRoots = buildTree(notes);
 
   const addNote = useAddNote();
+  const reparentNote = useReparentNote(notes);
 
   return (
     <DiaryTabPanel className="h-full max-w-[100vw]">
       <div className="text-lg font-semibold">Notes</div>
       <div className="flex h-full flex-col justify-stretch gap-1">
         <DragItemsContainer>
-          {() => (
-            <>
-              <div className="flex flex-col justify-stretch gap-1 rounded-xl bg-black p-4">
-                <NoteTree treeItems={treeRoots} level={0} />
-              </div>
-              <FreeSpaceArea />
-              <Button onClick={addNote} variant={"ghost"}>
-                <CirclePlusIcon width={16} />
-                Add Note
-              </Button>
-            </>
-          )}
+          <div className="flex flex-col justify-stretch gap-1 rounded-xl bg-black p-4">
+            <NoteTree
+              reparentNote={reparentNote}
+              treeItems={treeRoots}
+              level={0}
+            />
+          </div>
+          <FreeSpaceArea reparentNote={reparentNote} />
+          <Button onClick={addNote} variant={"ghost"}>
+            <CirclePlusIcon width={16} />
+            Add Note
+          </Button>
         </DragItemsContainer>
       </div>
     </DiaryTabPanel>
@@ -133,13 +135,12 @@ export function NotesManager() {
 export function NoteTree({
   treeItems,
   level,
+  reparentNote,
 }: {
   treeItems: TreeItem[];
   level: number;
+  reparentNote: ReturnType<typeof useReparentNote>;
 }) {
-  const notes = useDiaryStore((state) => state.notes);
-  const reparentNote = useReparentNote(notes);
-
   return treeItems.map((treeItem) => (
     <TreeItemComponent
       key={treeItem.id}
@@ -162,11 +163,7 @@ function TreeItemComponent({
   const itemRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <div
-      className="flex flex-col justify-stretch gap-1"
-      key={treeItem.id}
-      ref={itemRef}
-    >
+    <div className="flex flex-col justify-stretch gap-1" ref={itemRef}>
       <Collapsible className="w-[350px]">
         <div className="flex items-center gap-2">
           <DragItem
@@ -192,7 +189,11 @@ function TreeItemComponent({
           <CollapsibleContent className="">
             <div className="flex flex-col justify-stretch gap-1 py-1">
               {treeItem.children.length > 0 ? (
-                <NoteTree level={level + 1} treeItems={treeItem.children} />
+                <NoteTree
+                  reparentNote={reparentNote}
+                  level={level + 1}
+                  treeItems={treeItem.children}
+                />
               ) : null}
             </div>
           </CollapsibleContent>
@@ -203,24 +204,25 @@ function TreeItemComponent({
 }
 
 function useReparentNote(notes: DiaryNote[]) {
-  const loadNotes = useDiaryStore((state) => state.loadNotes);
   const forceUpdateNotes = useDiaryStore((state) => state.forceUpdateNotes);
   const { loading, error, handleRequest } = useRequestHandler();
+  const reparentNote = React.useCallback(
+    (note: TreeItem, toNote: TreeItem | null) => {
+      const toNoteId = toNote ? toNote.id : null;
+      if (toNote !== null) {
+        if (toNote.id == note.id) return;
+        if (toNote.getParentIds().indexOf(note.id) != -1) return;
+      }
+      const actualNote = notes.filter((x) => x.id == note.id)[0];
+      actualNote.parentNoteId = toNoteId;
 
-  const reparentNote = (note: TreeItem, toNote: TreeItem | null) => {
-    const toNoteId = toNote ? toNote.id : null;
-    if (toNote !== null) {
-      if (toNote.id == note.id) return;
-      if (toNote.getParentIds().indexOf(note.id) != -1) return;
-    }
-    const actualNote = notes.filter((x) => x.id == note.id)[0];
-    actualNote.parentNoteId = toNoteId;
-
-    forceUpdateNotes(notes);
-    handleRequest(async () => {
-      await updateDiaryNote({ id: note.id, parentNoteId: toNoteId });
-    });
-  };
+      forceUpdateNotes(notes);
+      handleRequest(async () => {
+        await updateDiaryNote({ id: note.id, parentNoteId: toNoteId });
+      });
+    },
+    [forceUpdateNotes, notes],
+  );
 
   return reparentNote;
 }
@@ -304,10 +306,12 @@ function useAddNote() {
   return addNewNote;
 }
 
-function FreeSpaceArea() {
+function FreeSpaceArea({
+  reparentNote,
+}: {
+  reparentNote: ReturnType<typeof useReparentNote>;
+}) {
   const addNewNote = useAddNote();
-  const notes = useDiaryStore((state) => state.notes);
-  const reparentNote = useReparentNote(notes);
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
