@@ -34,7 +34,7 @@ export function ArtefactsPanel() {
   const updateNote = React.useCallback(async () => {
     await loadNote();
     forceUpdateNotes(notes);
-  }, [notes]);
+  }, [notes, loadNote]);
 
   return (
     <DiaryTabPanel className="">
@@ -91,8 +91,6 @@ export function ArtefactItem({
   reloadNote: () => Promise<void>;
   note: VerboseNote;
 }) {
-  const [embedCode, setEmbedCode] = React.useState(artefact.embedCode);
-
   const { loading, error, handleRequest } = useRequestHandler();
 
   const applyEmbeddingCode = React.useCallback(
@@ -102,21 +100,21 @@ export function ArtefactItem({
         await reloadNote();
       });
     },
-    [artefact, reloadNote, note.id],
+    [artefact, reloadNote, note],
   );
   const deleteArtefact = React.useCallback(async () => {
     handleRequest(async () => {
       await deleteNoteArtefact(note.id, artefact.id);
       await reloadNote();
     });
-  }, [artefact, reloadNote, note.id]);
+  }, [artefact, reloadNote, note]);
 
   const onSaveContent = React.useCallback(
     async (data: RichContentData) => {
       await updateNoteArtefact(note.id, artefact.id, { content: data });
       await reloadNote();
     },
-    [artefact, reloadNote, note.id],
+    [artefact, reloadNote, note],
   );
 
   const embed = React.useMemo(() => {
@@ -199,7 +197,7 @@ export function AddArtefactButton({
       await addNoteArtefact(note.id, {});
       await reloadNote();
     });
-  }, [note.id]);
+  }, [note, reloadNote]);
 
   return (
     <Button variant={"secondary"} onClick={addArtefact}>
