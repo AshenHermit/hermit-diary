@@ -31,13 +31,11 @@ export function InfoPanel() {
           <UserBadge user={user} />
         </div>
         <div className="p-4 text-2xl font-bold">{title}</div>
-        {diaryTab == "info" ? (
-          <RichContentEditor
-            defaultValue={description}
-            readOnly
-            key={JSON.stringify(description)}
-          />
-        ) : null}
+        <RichContentEditor
+          defaultValue={description}
+          readOnly
+          key={JSON.stringify(description)}
+        />
       </div>
     </DiaryTabPanel>
   );

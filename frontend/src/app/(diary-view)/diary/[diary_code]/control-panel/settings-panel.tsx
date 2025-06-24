@@ -326,7 +326,7 @@ export function DiaryDescriptionEditor({ readOnly }: { readOnly?: boolean }) {
     },
     [diaryId],
   );
-  if (diaryTab != "settings") return;
+
   return (
     <RichContentEditor
       readOnly={!writePermission}

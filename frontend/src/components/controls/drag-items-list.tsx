@@ -121,6 +121,7 @@ export type DragItemProps<T extends HTMLElement, D> = {
   onDataDropped?: (data: any) => void;
   draggable?: boolean;
   itemRef?: React.RefObject<T | null>;
+  onHoverStateChange?: (state: boolean) => void;
 };
 
 export function DragItem<T extends HTMLElement, D>({
@@ -129,6 +130,7 @@ export function DragItem<T extends HTMLElement, D>({
   onDataDropped,
   draggable = true,
   itemRef,
+  onHoverStateChange,
 }: DragItemProps<T, D>) {
   const triggerRef = React.useRef<T>(null);
   const context = React.useContext(DragContext);
@@ -150,6 +152,18 @@ export function DragItem<T extends HTMLElement, D>({
     if (currentDragData) {
       if (onDataDropped) onDataDropped(currentDragData);
     }
+    if (onHoverStateChange) onHoverStateChange(false);
+  };
+
+  const onPointerEnter = () => {
+    const currentDragData = context.getDraggingData();
+    if (currentDragData) {
+      if (onHoverStateChange) onHoverStateChange(true);
+    }
+  };
+
+  const onPointerLeave = () => {
+    if (onHoverStateChange) onHoverStateChange(false);
   };
 
   const onMousedown = (e: MouseEvent) => {
@@ -167,12 +181,16 @@ export function DragItem<T extends HTMLElement, D>({
       if (draggable)
         triggerRef.current.addEventListener("mousedown", onMousedown);
       triggerRef.current.addEventListener("mouseup", onMouseUp);
+      triggerRef.current.addEventListener("mouseenter", onPointerEnter);
+      triggerRef.current.addEventListener("mouseleave", onPointerLeave);
     }
     return () => {
       if (triggerRef && triggerRef.current) {
         if (draggable)
           triggerRef.current.removeEventListener("mousedown", onMousedown);
         triggerRef.current.removeEventListener("mouseup", onMouseUp);
+        triggerRef.current.removeEventListener("mouseenter", onPointerEnter);
+        triggerRef.current.removeEventListener("mouseleave", onPointerLeave);
       }
     };
   }, [draggable]);

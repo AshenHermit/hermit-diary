@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  AddArtefactButton,
+  ArtefactItem,
+} from "@/app/(diary-view)/diary/[diary_code]/control-panel/artefacts-panel";
 import { NoteFrame } from "@/components/note-editor/note-frame";
 import {
   Accordion,
@@ -63,66 +67,85 @@ export function NoteView({
   return (
     <>
       <EditModeLoader value={editMode} onValueChange={setEditMode} />
-      <div className="h-full grid-cols-[200px_1fr_200px] gap-6 max-md:flex max-md:grid-cols-1 max-md:grid-rows-[auto_auto_auto] max-md:flex-col md:grid">
-        <div className="flex flex-col gap-2 max-md:order-3">
-          {note.incomingLinks.length > 0 ? (
-            <div className="flex items-center gap-2 text-base text-white">
-              <ArrowDownRight /> Incoming links
-            </div>
-          ) : null}
-          {note.incomingLinks.map((x) => (
-            <ReferenceLink key={x.id} note={x} onClick={() => onLink(x.id)} />
-          ))}
-          <hr />
-          {note.outcomingLinks.length > 0 ? (
-            <div className="flex items-center gap-2 text-base text-white">
-              <ArrowUpLeft /> Outgoing links
-            </div>
-          ) : null}
-          {note.outcomingLinks.map((x) => (
-            <ReferenceLink key={x.id} note={x} onClick={() => onLink(x.id)} />
-          ))}
-          <Accordion type="multiple">
-            <AccordionItem value="info">
-              <AccordionTrigger>
-                <InfoIcon /> Info
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-col gap-2 text-xs proportional-nums tracking-wide text-white opacity-50">
-                  <div className="flex items-center justify-between">
-                    <span>created at:</span>{" "}
-                    <span className="w-min tabular-nums">
-                      {strToFormattedDateTime(note.createdAt)}
-                    </span>
+      <div className="flex flex-col gap-6">
+        <div className="h-full grid-cols-[200px_1fr_200px] gap-6 max-md:flex max-md:grid-cols-1 max-md:grid-rows-[auto_auto_auto] max-md:flex-col md:grid">
+          <div className="flex flex-col gap-2 max-md:order-3">
+            {note.incomingLinks.length > 0 ? (
+              <div className="flex items-center gap-2 text-base text-white">
+                <ArrowDownRight /> Incoming links
+              </div>
+            ) : null}
+            {note.incomingLinks.map((x) => (
+              <ReferenceLink key={x.id} note={x} onClick={() => onLink(x.id)} />
+            ))}
+            <hr />
+            {note.outcomingLinks.length > 0 ? (
+              <div className="flex items-center gap-2 text-base text-white">
+                <ArrowUpLeft /> Outgoing links
+              </div>
+            ) : null}
+            {note.outcomingLinks.map((x) => (
+              <ReferenceLink key={x.id} note={x} onClick={() => onLink(x.id)} />
+            ))}
+            <Accordion type="multiple">
+              <AccordionItem value="info">
+                <AccordionTrigger>
+                  <InfoIcon /> Info
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-col gap-2 text-xs proportional-nums tracking-wide text-white opacity-50">
+                    <div className="flex items-center justify-between">
+                      <span>created at:</span>{" "}
+                      <span className="w-min tabular-nums">
+                        {strToFormattedDateTime(note.createdAt)}
+                      </span>
+                    </div>
+                    <div className="text- flex items-center justify-between">
+                      <span>updated at:</span>
+                      <span className="w-min tabular-nums">
+                        {strToFormattedDateTime(note.updatedAt)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text- flex items-center justify-between">
-                    <span>updated at:</span>
-                    <span className="w-min tabular-nums">
-                      {strToFormattedDateTime(note.updatedAt)}
-                    </span>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+          <div className="border-white/20 max-md:order-1 max-md:w-full max-md:border-b-[1px] max-md:py-4 md:border-x-[1px] md:px-4">
+            <NoteFrame
+              note={note}
+              config={{
+                canEdit: writePermission,
+                onNoteUpdate: () => fetchNote(),
+                editMode,
+                defaultEditMode: editMode,
+                setEditMode,
+                onNoteLinkUsed: onLink,
+                classNames: {
+                  title: "!text-2xl font-bold",
+                },
+              }}
+            />
+          </div>
+          <div className="max-md:order-3"></div>
         </div>
-        <div className="border-white/20 max-md:order-1 max-md:w-full max-md:border-b-[1px] max-md:py-4 md:border-x-[1px] md:px-4">
-          <NoteFrame
-            note={note}
-            config={{
-              canEdit: writePermission,
-              onNoteUpdate: () => fetchNote(),
-              editMode,
-              defaultEditMode: editMode,
-              setEditMode,
-              onNoteLinkUsed: onLink,
-              classNames: {
-                title: "!text-2xl font-bold",
-              },
-            }}
-          />
+        <hr />
+        <div className="grid gap-1 max-md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {note.artefacts
+            .sort((a, b) => (a.id > b.id ? 1 : -1))
+            .map((art) => (
+              <ArtefactItem
+                note={note}
+                key={art.id}
+                artefact={art}
+                editable={writePermission && editMode}
+                reloadNote={fetchNote}
+              />
+            ))}
+          {writePermission && editMode ? (
+            <AddArtefactButton note={note} reloadNote={fetchNote} />
+          ) : null}
         </div>
-        <div className="max-md:order-3"></div>
       </div>
     </>
   );
