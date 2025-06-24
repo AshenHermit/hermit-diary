@@ -31,7 +31,7 @@ const DragContext = React.createContext<DragContextType>({
 export function DragItemsContainer({
   children,
 }: {
-  children: () => React.ReactElement | React.ReactElement[];
+  children: React.ReactElement | React.ReactElement[];
 }) {
   const currentDraggingElement = React.useRef<HTMLElement | null>(null);
   const currentDraggingData = React.useRef<any>(null);
@@ -112,7 +112,7 @@ export function DragItemsContainer({
     };
   }, []);
 
-  return <DragContext.Provider value={ctx}>{children()}</DragContext.Provider>;
+  return <DragContext.Provider value={ctx}>{children}</DragContext.Provider>;
 }
 
 export type DragItemProps<T extends HTMLElement, D> = {
@@ -147,34 +147,41 @@ export function DragItem<T extends HTMLElement, D>({
     }
   };
 
-  const onPointerUp = () => {
+  const onPointerUp = React.useCallback(() => {
     const currentDragData = context.getDraggingData();
     if (currentDragData) {
       if (onDataDropped) onDataDropped(currentDragData);
     }
     if (onHoverStateChange) onHoverStateChange(false);
-  };
+  }, [onDataDropped, onHoverStateChange, context]);
 
-  const onPointerEnter = () => {
+  const onPointerEnter = React.useCallback(() => {
     const currentDragData = context.getDraggingData();
     if (currentDragData) {
       if (onHoverStateChange) onHoverStateChange(true);
     }
-  };
+  }, [onHoverStateChange, context]);
 
-  const onPointerLeave = () => {
+  const onPointerLeave = React.useCallback(() => {
     if (onHoverStateChange) onHoverStateChange(false);
-  };
+  }, [onHoverStateChange]);
 
-  const onMousedown = (e: MouseEvent) => {
-    const rect = itemRef?.current?.getBoundingClientRect();
-    const left = rect?.left ?? 0;
-    const top = rect?.top ?? 0;
-    onPressed(e.pageX - left, e.pageY - top);
-  };
-  const onMouseUp = (e: MouseEvent) => {
-    onPointerUp();
-  };
+  const onMousedown = React.useCallback(
+    (e: MouseEvent) => {
+      const rect = itemRef?.current?.getBoundingClientRect();
+      const left = rect?.left ?? 0;
+      const top = rect?.top ?? 0;
+      onPressed(e.pageX - left, e.pageY - top);
+    },
+    [onPressed],
+  );
+
+  const onMouseUp = React.useCallback(
+    (e: MouseEvent) => {
+      onPointerUp();
+    },
+    [onPointerUp],
+  );
 
   React.useEffect(() => {
     if (triggerRef && triggerRef.current) {
@@ -193,7 +200,7 @@ export function DragItem<T extends HTMLElement, D>({
         triggerRef.current.removeEventListener("mouseleave", onPointerLeave);
       }
     };
-  }, [draggable]);
+  }, [draggable, onMousedown, onMouseUp, onPointerEnter, onPointerLeave]);
 
   return cloneElement(children, { ref: triggerRef });
 }

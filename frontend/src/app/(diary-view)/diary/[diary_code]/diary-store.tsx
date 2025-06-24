@@ -70,7 +70,7 @@ const createDiaryStore = () => {
       },
       forceUpdateNotes(notes) {
         if (notes) {
-          set({ notes: [...notes] });
+          set({ notes: [...notes.map((x) => ({ ...x }))] });
           return;
         }
         set({ notes: [...get().notes] });
