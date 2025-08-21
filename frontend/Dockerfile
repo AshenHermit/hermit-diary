@@ -17,6 +17,8 @@ ENV NEXT_PUBLIC_REMOTE_API_URL=${NEXT_PUBLIC_REMOTE_API_URL}
 
 RUN npm run build
 
+RUN mkdir -p /app/.next/cache/images && chown -R node:node /app/.next
+
 EXPOSE 3000
 
 USER node
