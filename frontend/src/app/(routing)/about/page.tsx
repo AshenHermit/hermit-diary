@@ -4,6 +4,9 @@ import RichContentEditor from "@/components/note-editor/rich-content-editor";
 import { getDiaryNote } from "@/services/methods/user/notes";
 import Link from "next/link";
 import { Suspense } from "react";
+import { metadata } from "./about-metadata";
+
+export { metadata };
 
 export default async function Page() {
   const note = await getDiaryNote(48);

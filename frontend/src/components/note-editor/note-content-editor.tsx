@@ -29,6 +29,7 @@ export function NoteContentEditor({ readOnly }: { readOnly?: boolean }) {
       diaryId={note.diary.id}
       readOnly={readOnly}
       defaultValue={actualNote.content}
+      trailingBlock={false}
       onDebouncedSave={handleDebouncedSave}
       className="!pb-[100%]"
     />

@@ -16,6 +16,14 @@
     .bn-editor {
       background-color: transparent;
     }
+
+    .bn-editor[contenteditable="true"]
+      [data-file-block]
+      .bn-add-file-button:hover,
+    [data-file-block] .bn-file-name-with-icon:hover,
+    .ProseMirror-selectednode .bn-file-name-with-icon {
+      background-color: #000 !important;
+    }
   }
 }
 

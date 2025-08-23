@@ -21,7 +21,7 @@ export class FilesService {
       throw new BadRequestException('no file uploaded');
     }
 
-    const sizeMB = 5;
+    const sizeMB = 15;
     const maxSize = sizeMB * 1024 * 1024; // 5mb
     if (file.size > maxSize) {
       throw new BadRequestException(`file size is greater than ${sizeMB}mb`);

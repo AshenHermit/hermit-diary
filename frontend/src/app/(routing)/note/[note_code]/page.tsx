@@ -5,6 +5,9 @@ import { decodeId } from "@/lib/hash-utils";
 import { getDiaryProperties } from "@/services/methods/user/diaries";
 import { getDiaryNote } from "@/services/methods/user/server-notes";
 import { notFound } from "next/navigation";
+import { generateMetadata } from "./note-metadata";
+
+export { generateMetadata };
 
 export default async function Page({
   params,

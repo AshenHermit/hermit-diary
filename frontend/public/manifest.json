@@ -1,0 +1,19 @@
+{
+  "name": "Hermit Diary",
+  "short_name": "Hermit Diary",
+  "description": "Персональный дневник с прикольными визуализациями",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ffac59",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["productivity", "lifestyle", "personal"],
+  "lang": "ru"
+}

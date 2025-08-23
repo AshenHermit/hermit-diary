@@ -16,10 +16,75 @@ import { CookiesProvider } from "next-client-cookies/server";
 const font = Montserrat({ subsets: ["latin", "cyrillic"] });
 
 export const metadata: Metadata = {
-  title: "Hermits Diary",
-  description: "diary",
+  title: {
+    default: "Hermit Diary - Персональный дневник",
+    template: "%s | Hermit Diary",
+  },
+  description:
+    "Создавайте и ведите персональные дневники с прикольными визуализациями. Организуйте мысли, идеи и воспоминания в удобном формате.",
+  keywords: [
+    "дневник",
+    "персональный дневник",
+    "заметки",
+    "организация мыслей",
+    "визуализация",
+    "Hermit Diary",
+  ],
+  authors: [{ name: "Hermit" }],
+  creator: "Hermit Diary",
+  publisher: "Hermit Diary",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://diary.ashen-hermit.space"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "ru_RU",
+    url: "/",
+    siteName: "Hermit Diary",
+    title: "Hermit Diary - Персональный дневник",
+    description:
+      "Создавайте и ведите персональные дневники с прикольными визуализациями",
+    images: [
+      {
+        url: "/textures/bg.png",
+        width: 1200,
+        height: 630,
+        alt: "Hermit Diary - Персональный дневник",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@hermitdiary",
+    creator: "@hermitdiary",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo512.png",
+    shortcut: "/logo512.png",
+    apple: "/logo512.png",
+  },
+  manifest: "/manifest.json",
+  other: {
+    "application-name": "Hermit Diary",
+    "theme-color": "#ffac59",
+    "msapplication-TileColor": "#ffac59",
   },
 };
 
@@ -37,7 +102,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body
         className={classNames("dark bg-bg text-foreground", font.className)}
       >

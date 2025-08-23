@@ -1,4 +1,7 @@
 import { MainPageClientContent } from "@/app/(routing)/(homepage)/client-content";
+import { metadata } from "./homepage-metadata";
+
+export { metadata };
 
 export default function Page() {
   return (
