@@ -43,7 +43,7 @@ export default function RichContentEditor({
     initialContent: Array.isArray(defaultValue?.blocks)
       ? defaultValue?.blocks
       : undefined,
-    trailingBlock: trailingBlock,
+    trailingBlock: false,
     uploadFile: async (file: File) => {
       const res = await uploadFile(file);
       if (res) return res?.url;

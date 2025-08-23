@@ -8,6 +8,9 @@ import { Diary } from "@/services/types/diary";
 import { CircleDotDashed } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { generateMetadata } from "./user-metadata";
+
+export { generateMetadata };
 
 export default async function Page({
   params,
