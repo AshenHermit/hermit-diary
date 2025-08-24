@@ -94,6 +94,7 @@ export default function RichContentEditor({
         editor={editor}
         onChange={onChange}
         ref={viewRef}
+        theme={"dark"}
       >
         <SuggestionMenuController
           triggerCharacter={"/"}
