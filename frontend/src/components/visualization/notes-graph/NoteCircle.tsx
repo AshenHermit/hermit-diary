@@ -13,6 +13,7 @@ export type NoteCircleProps = {
   accentColor?: string;
   draggable?: boolean;
   titleType?: "default" | "vertical";
+  isExternal?: boolean;
 };
 export type NoteCirlceApi = Konva.Group & {
   vx: number;
@@ -33,6 +34,7 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
       accentColor,
       draggable = true,
       titleType = "default",
+      isExternal = false,
     }: NoteCircleProps,
     ref,
   ) => {
@@ -160,7 +162,13 @@ export const NoteCircle = forwardRef<NoteCirlceApi, NoteCircleProps>(
     if (!note.isPublic) noteTitle = "⭕ " + noteTitle;
 
     return (
-      <Group ref={groupRef} draggable={draggable} x={0} y={0}>
+      <Group
+        ref={groupRef}
+        draggable={draggable}
+        x={0}
+        y={0}
+        opacity={isExternal ? 0.5 : 1}
+      >
         {titleType == "default" ? (
           <Text
             ref={textRef}

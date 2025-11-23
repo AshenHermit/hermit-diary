@@ -22,6 +22,8 @@ import classNames from "classnames";
 import {
   CassetteTapeIcon,
   CircleDotDashedIcon,
+  ClockFadingIcon,
+  ClockIcon,
   EllipsisVerticalIcon,
   FolderTreeIcon,
   InfoIcon,
@@ -140,8 +142,12 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
               onValueChange={(value) => setCurrentView(value as ViewKey)}
             >
               <TabsList>
-                <TabsTrigger value="graph">Graph</TabsTrigger>
-                <TabsTrigger value="time">Time</TabsTrigger>
+                <TabsTrigger value="graph" className="gap-2">
+                  <GraphIcon /> Graph
+                </TabsTrigger>
+                <TabsTrigger value="time" className="gap-2">
+                  <ClockFadingIcon /> Time
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           }
@@ -156,6 +162,28 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
         ) : null}
       </div>
     </>
+  );
+}
+
+function GraphIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={classNames(className, "lucide rotate-12")}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+    </svg>
   );
 }
 

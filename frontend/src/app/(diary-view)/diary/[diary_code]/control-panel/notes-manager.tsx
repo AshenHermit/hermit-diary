@@ -104,10 +104,14 @@ function buildTree(items: DiaryNote[]): TreeItem[] {
 
 export function NotesManager() {
   const notes = useDiaryStore((state) => state.notes);
-  const treeRoots = buildTree(notes);
+  const diaryId = useDiaryStore((state) => state.id);
+  const notesFiltered = notes.filter(
+    (x) => x.diary === undefined || x.diary?.id == diaryId,
+  );
+  const treeRoots = buildTree(notesFiltered);
 
   const addNote = useAddNote();
-  const reparentNote = useReparentNote(notes);
+  const reparentNote = useReparentNote(notesFiltered);
 
   return (
     <DiaryTabPanel className="h-full max-w-[100vw]">

@@ -16,10 +16,12 @@ export type NotesGraphProps = {
   onNoteSelected: (note: DiaryNote) => void;
   activeNoteId?: number | null;
   accentColor?: string;
+  currentDiaryId?: number | null;
 };
 
 export function NotesGraph({
   notes,
+  currentDiaryId,
   onNoteSelected,
   activeNoteId,
   accentColor = "#ffac59",
@@ -36,6 +38,9 @@ export function NotesGraph({
               accentColor={accentColor}
               key={note.id}
               note={note}
+              isExternal={
+                note.diary !== undefined && note.diary?.id !== currentDiaryId
+              }
               active={note.id == activeNoteId}
               onSelected={onNoteSelected}
             />
