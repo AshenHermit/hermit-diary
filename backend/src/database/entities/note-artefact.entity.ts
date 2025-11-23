@@ -15,7 +15,7 @@ import { Note } from './note.entity';
 
 @Entity()
 export class NoteArtefact {
-  @ApiProperty({ example: 1, description: 'Уникальный ID артефакта' })
+  @ApiProperty({ example: 1, description: 'Unique artifact ID' })
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -18,7 +18,11 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -34,11 +38,14 @@ import { useRequestHandler } from "@/hooks/use-request-handler";
 import { useToast } from "@/hooks/use-toast";
 import { encodeId } from "@/lib/hash-utils";
 import { strToFormattedDateTime } from "@/lib/time-utils";
+import { getUserDiaries } from "@/services/methods/user/diaries";
 import {
   deleteDiaryNote,
   updateDiaryNote,
 } from "@/services/methods/user/notes";
+import { Diary } from "@/services/types/diary";
 import { VerboseNote } from "@/services/types/notes";
+import { useUserStore } from "@/store/user-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import debounce from "just-debounce-it";
@@ -46,6 +53,7 @@ import {
   BookOpenText,
   CircleDotDashed,
   EllipsisVerticalIcon,
+  RedoIcon,
   Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
@@ -98,6 +106,7 @@ function NoteHeader() {
   const editMode = useNoteStore((state) => state.editMode);
   const setEditMode = useNoteStore((state) => state.setEditMode);
   const canEdit = useNoteStore((state) => state.canEdit);
+  const userId = useUserStore((state) => state.id);
   const note = useNoteStore((state) => state.note);
   const setNote = useNoteStore((state) => state.setNote);
   const onNoteUpdate = useNoteStore((state) => state.onNoteUpdate);
@@ -132,15 +141,36 @@ function NoteHeader() {
     });
   }, [note, router, diaryLinkTree]);
 
+  const [userDiaries, setUserDiaries] = React.useState<Diary[]>([]);
+  const loadUserDiaries = React.useCallback(async () => {
+    const diaries = await getUserDiaries(userId);
+    setUserDiaries(diaries);
+  }, [userId]);
+
+  React.useEffect(() => {
+    loadUserDiaries();
+  }, [loadUserDiaries]);
+
+  const moveNote = React.useCallback(
+    async (diaryId: number) => {
+      handleRequest(async () => {
+        await updateDiaryNote({ id: note.id, diaryId: diaryId });
+        if (onNoteUpdate) onNoteUpdate(note);
+        router.replace(diaryLinkTree);
+      });
+    },
+    [note, router, diaryLinkTree],
+  );
+
   return (
     <div className="flex items-center justify-between">
       <ConfirmDialog
         apiRef={deletionDialogApi}
         onConfirm={deleteNote}
-        title={"Удаление записи"}
-        description={"Безвозвратно"}
-        okContent={"Удалить"}
-        cancelContent={"Отмена"}
+        title={"Delete note"}
+        description={"This action cannot be undone"}
+        okContent={"Delete"}
+        cancelContent={"Cancel"}
         danger
       />
       <NoteTitle />
@@ -168,6 +198,25 @@ function NoteHeader() {
             </DropdownMenuItem>
             {canEdit ? (
               <>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <RedoIcon />
+                    Move to other diary
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      {userDiaries.map((diary) => (
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          key={diary.id}
+                          onClick={() => moveNote(diary.id)}
+                        >
+                          {diary.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
                 <DropdownMenuCheckboxItem
                   checked={editMode}
                   onCheckedChange={setEditMode}

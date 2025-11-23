@@ -21,10 +21,8 @@ export function LoginForm({
     <div className={classNames("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Привет</CardTitle>
-          <CardDescription>
-            можно войти через гуглю, потом добавлю вк и яндекс
-          </CardDescription>
+          <CardTitle className="text-xl">Hello</CardTitle>
+          {/* <CardDescription></CardDescription> */}
         </CardHeader>
         <CardContent>
           <form>
@@ -49,7 +47,7 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
-        вот...
+        here...
       </div>
     </div>
   );

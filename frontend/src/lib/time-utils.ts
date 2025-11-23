@@ -18,5 +18,5 @@ export function strToDate(str: string) {
 }
 
 export function strToFormattedDateTime(str: string) {
-  return strToDate(str).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" });
+  return strToDate(str).toLocaleString("en-US", { timeZone: "Europe/Moscow" });
 }

@@ -261,10 +261,10 @@ function NoteItem({
       <ConfirmDialog
         apiRef={deletionDialogApi}
         onConfirm={deleteNote}
-        title={"Удаление записи"}
-        description={"Безвозвратно"}
-        okContent={"Удалить"}
-        cancelContent={"Отмена"}
+        title={"Delete note"}
+        description={"This action cannot be undone"}
+        okContent={"Delete"}
+        cancelContent={"Cancel"}
         danger
       />
       <ContextMenu modal={false}>

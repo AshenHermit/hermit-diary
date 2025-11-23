@@ -9,10 +9,11 @@ import { SearchModule } from '../search/search.module';
 import { NoteArtefact } from 'src/database/entities/note-artefact.entity';
 import { NoteArtefactsService } from './notes.artefacts.service';
 import { NoteArtefactsController } from './notes.artefacts.controller';
+import { Diary } from 'src/database/entities/diary.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Note]),
+    TypeOrmModule.forFeature([Note, Diary]),
     TypeOrmModule.forFeature([NoteArtefact]),
     PropertiesModule,
     SearchModule,

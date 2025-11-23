@@ -15,8 +15,8 @@ export async function generateMetadata({
 
     if (!note) {
       return {
-        title: "Заметка не найдена - Hermit Diary",
-        description: "Заметка не найдена или недоступна",
+        title: "Note not found - Hermit Diary",
+        description: "Note not found or unavailable",
         robots: {
           index: false,
           follow: false,
@@ -27,7 +27,7 @@ export async function generateMetadata({
     const properties = await getDiaryProperties(note.diary.id);
 
     const title = `${note.name} - ${note.diary.name} - Hermit Diary`;
-    const description = `Заметка "${note.name}" из дневника ${note.diary.user.name}`;
+    const description = `Note "${note.name}" from diary ${note.diary.user.name}`;
 
     const imageUrl =
       properties.coverImage || note.diary.picture || "/textures/bg.png";
@@ -36,8 +36,8 @@ export async function generateMetadata({
       title,
       description,
       keywords: [
-        "заметка",
-        "дневник",
+        "note",
+        "diary",
         note.name,
         note.diary.name,
         note.diary.user.name,
@@ -56,10 +56,10 @@ export async function generateMetadata({
             url: imageUrl,
             width: 1200,
             height: 630,
-            alt: `Заметка ${note.name} из дневника ${note.diary.name}`,
+            alt: `Note ${note.name} from diary ${note.diary.name}`,
           },
         ],
-        locale: "ru_RU",
+        locale: "en_US",
       },
       twitter: {
         card: "summary_large_image",
@@ -81,8 +81,8 @@ export async function generateMetadata({
     };
   } catch (error) {
     return {
-      title: "Заметка - Hermit Diary",
-      description: "Заметка из дневника",
+      title: "Note - Hermit Diary",
+      description: "Note from diary",
       robots: {
         index: false,
         follow: false,

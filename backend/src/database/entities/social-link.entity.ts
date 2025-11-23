@@ -4,27 +4,27 @@ import { User } from './user.entity';
 
 @Entity()
 export class SocialLink {
-  @ApiProperty({ example: 1, description: 'Уникальный ID ссылки' })
+  @ApiProperty({ example: 1, description: 'Unique link ID' })
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({
     example: 'vk',
-    description: 'название для ссылки',
+    description: 'link title',
   })
   @Column({ default: '' })
   title: string;
 
   @ApiProperty({
     example: 'https://vk.com/user',
-    description: 'ссылка на внешний сайт',
+    description: 'link to external site',
   })
   @Column({ default: '' })
   url: string;
 
   @ApiProperty({
-    example: 'описание',
-    description: 'описание',
+    example: 'description',
+    description: 'description',
   })
   @Column({ default: '' })
   description: string;

@@ -77,7 +77,7 @@ export function NotesGraphWorld({
   };
 
   function updateForces() {
-    // Отталкивание
+    // Repulsion
     for (let i = 0; i < nodeRefs.current.length; i++) {
       const a = nodeRefs.current[i];
       for (let j = i + 1; j < nodeRefs.current.length; j++) {

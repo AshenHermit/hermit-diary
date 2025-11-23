@@ -1,24 +1,24 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Hermit Diary - Персональный дневник",
+  title: "Hermit Diary - Personal Diary",
   description:
-    "Создавайте и ведите персональные дневники с прикольными визуализациями. Организуйте мысли, идеи и воспоминания в удобном формате.",
+    "Create and maintain personal diaries with cool visualizations. Organize thoughts, ideas and memories in a convenient format.",
   keywords: [
-    "дневник",
-    "персональный дневник",
-    "заметки",
-    "организация мыслей",
-    "визуализация",
+    "diary",
+    "personal diary",
+    "notes",
+    "thought organization",
+    "visualization",
     "Hermit Diary",
   ],
   authors: [{ name: "Hermit Diary Team" }],
   creator: "Hermit Diary",
   publisher: "Hermit Diary",
   openGraph: {
-    title: "Hermit Diary - Персональный дневник",
+    title: "Hermit Diary - Personal Diary",
     description:
-      "Создавайте и ведите персональные дневники с прикольными визуализациями. Организуйте мысли, идеи и воспоминания в удобном формате.",
+      "Create and maintain personal diaries with cool visualizations. Organize thoughts, ideas and memories in a convenient format.",
     type: "website",
     url: "/",
     siteName: "Hermit Diary",
@@ -27,16 +27,16 @@ export const metadata: Metadata = {
         url: "/textures/bg.png",
         width: 1200,
         height: 630,
-        alt: "Hermit Diary - Персональный дневник",
+        alt: "Hermit Diary - Personal Diary",
       },
     ],
-    locale: "ru_RU",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hermit Diary - Персональный дневник",
+    title: "Hermit Diary - Personal Diary",
     description:
-      "Создавайте и ведите персональные дневники с прикольными визуализациями",
+      "Create and maintain personal diaries with cool visualizations",
     images: ["/textures/bg.png"],
   },
   robots: {
