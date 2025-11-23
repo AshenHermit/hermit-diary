@@ -1,7 +1,7 @@
 {
   "name": "Hermit Diary",
   "short_name": "Hermit Diary",
-  "description": "Персональный дневник с прикольными визуализациями",
+  "description": "Personal diary with cool visualizations",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -15,5 +15,5 @@
     }
   ],
   "categories": ["productivity", "lifestyle", "personal"],
-  "lang": "ru"
+  "lang": "en"
 }

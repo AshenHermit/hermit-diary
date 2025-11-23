@@ -1,24 +1,24 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "О проекте - Hermit Diary",
+  title: "About - Hermit Diary",
   description:
-    "Узнайте больше о проекте Hermit Diary - персональном дневнике с прикольными визуализациями и удобным интерфейсом.",
+    "Learn more about Hermit Diary - a personal diary with cool visualizations and a convenient interface.",
   keywords: [
-    "о проекте",
+    "about",
     "Hermit Diary",
-    "дневник",
-    "визуализация",
-    "разработка",
-    "технологии",
+    "diary",
+    "visualization",
+    "development",
+    "technologies",
   ],
   authors: [{ name: "Hermit Diary Team" }],
   creator: "Hermit Diary",
   publisher: "Hermit Diary",
   openGraph: {
-    title: "О проекте - Hermit Diary",
+    title: "About - Hermit Diary",
     description:
-      "Узнайте больше о проекте Hermit Diary - персональном дневнике с прикольными визуализациями и удобным интерфейсом.",
+      "Learn more about Hermit Diary - a personal diary with cool visualizations and a convenient interface.",
     type: "website",
     url: "/about",
     siteName: "Hermit Diary",
@@ -27,15 +27,15 @@ export const metadata: Metadata = {
         url: "/textures/bg.png",
         width: 1200,
         height: 630,
-        alt: "О проекте Hermit Diary",
+        alt: "About Hermit Diary",
       },
     ],
-    locale: "ru_RU",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "О проекте - Hermit Diary",
-    description: "Узнайте больше о проекте Hermit Diary",
+    title: "About - Hermit Diary",
+    description: "Learn more about Hermit Diary",
     images: ["/textures/bg.png"],
   },
   robots: {

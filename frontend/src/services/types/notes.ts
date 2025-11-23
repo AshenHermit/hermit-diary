@@ -45,6 +45,10 @@ export type VerboseNote = GlobalNote & {
   artefacts: Artefact[];
 };
 
+export type UpdateDTO = VerboseNote & {
+  diaryId?: number;
+};
+
 export type NoteProperties = {
   color?: string;
   circleType?: NoteCircleType;

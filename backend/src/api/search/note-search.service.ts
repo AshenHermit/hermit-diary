@@ -28,12 +28,12 @@ export type NoteInSearchWithDiary = NoteInSearch & {
 };
 
 export class SearchNotesDto {
-  @ApiProperty({ description: 'Поисковый запрос' })
+  @ApiProperty({ description: 'Search query' })
   @IsString()
   q: string;
 
   @ApiPropertyOptional({
-    description: 'Список тегов (через запятую)',
+    description: 'List of tags (comma-separated)',
     type: [String],
   })
   @IsOptional()
@@ -44,14 +44,14 @@ export class SearchNotesDto {
   @IsString({ each: true })
   tags?: string[];
 
-  @ApiPropertyOptional({ description: 'Номер страницы', example: 1 })
+  @ApiPropertyOptional({ description: 'Page number', example: 1 })
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10))
   @IsNumber()
   @Min(1)
   page?: number;
 
-  @ApiPropertyOptional({ description: 'Результатов на страницу', example: 10 })
+  @ApiPropertyOptional({ description: 'Results per page', example: 10 })
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10))
   @IsNumber()

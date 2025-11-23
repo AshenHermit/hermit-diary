@@ -22,12 +22,12 @@ export function Footer() {
           target="_blank"
         >
           <div className="flex items-center justify-center gap-4 text-center text-sm opacity-50">
-            Сообщить о проблеме или предложить идею
+            Report an issue or suggest an idea
           </div>
         </Link>
         <Link href={"/about"} target="_blank">
           <div className="flex items-center justify-center gap-4 text-sm opacity-50">
-            О проекте
+            About
           </div>
         </Link>
       </div>

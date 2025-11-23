@@ -55,6 +55,11 @@ export class UpdateNoteDTO {
   @IsNumber()
   parentNoteId?: number;
 
+  @ApiProperty({ example: 1, required: false })
+  @IsOptional()
+  @IsNumber()
+  diaryId?: number;
+
   properties?: PropertiesDto['properties'];
 }
 
@@ -62,6 +67,7 @@ export class UpdateNoteDTO {
 export class NotesService {
   constructor(
     @InjectRepository(Note) private notesRepository: Repository<Note>,
+    @InjectRepository(Diary) private diariesRepository: Repository<Diary>,
     private readonly noteContentService: NoteContentService,
     private readonly propertiesService: PropertiesService,
     private readonly noteSearchService: NoteSearchService,
@@ -209,8 +215,7 @@ export class NotesService {
   }
 
   async updateNote(id: number, updateDto: UpdateNoteDTO, user: User) {
-    const { properties, ...updateData } = updateDto;
-
+    const { properties, diaryId, ...updateData } = updateDto;
     await this.notesRepository.update(id, updateData);
 
     if (updateDto.properties) {
@@ -223,6 +228,9 @@ export class NotesService {
     }
     if (updateDto.name) {
       await this.updateNames(id, user);
+    }
+    if (updateDto.diaryId) {
+      await this.moveNoteToDiary(id, updateDto.diaryId, user);
     }
 
     const note = await this.notesRepository.findOne({
@@ -242,13 +250,32 @@ export class NotesService {
       });
     }
   }
+
+  async moveNoteToDiary(noteId: number, diaryId: number, user: User) {
+    const diary = await this.diariesRepository.findOne({
+      where: { id: diaryId },
+      relations: { user: true },
+    });
+    if (!diary) throw new NotFoundException('Diary not found');
+    if (diary.user.id != user.id) throw new UnauthorizedException('no access');
+
+    const note = await this.notesRepository.findOne({
+      where: { id: noteId },
+      relations: { diary: true },
+    });
+    if (!note) throw new NotFoundException('Note not found');
+    if (note.diary.id == diaryId)
+      throw new BadRequestException('Note already in this diary');
+    await this.notesRepository.update(noteId, { diary: diary });
+  }
+
   async updateLinks(id: number, content: UpdateNoteDTO['content'], user: User) {
     if (!content) return;
     const note = await this.notesRepository.findOne({
       where: { id: id },
       relations: { outcomingLinks: true },
     });
-    if (!note) throw new NotFoundException('Заметка не найдена');
+    if (!note) throw new NotFoundException('Note not found');
 
     const links = await this.noteContentService.findOutcomingLinks(content);
 

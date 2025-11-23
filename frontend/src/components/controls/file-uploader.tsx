@@ -135,7 +135,7 @@ export function FileUploader({
             height: areaRef.current.offsetHeight,
           }}
         >
-          Отпустите файлы для загрузки
+          Drop files to upload
         </div>
       )}
     </>

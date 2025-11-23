@@ -14,21 +14,15 @@ export async function generateMetadata({
     const user = await getUser(userId);
     const diaries = await getUserDiaries(userId);
 
-    const title = `${user.name} - Профиль - Hermit Diary`;
-    const description = `Профиль пользователя ${user.name}. Количество дневников: ${diaries.length}`;
+    const title = `${user.name} - Profile - Hermit Diary`;
+    const description = `User profile ${user.name}. Number of diaries: ${diaries.length}`;
 
     const imageUrl = user.picture || "/textures/bg.png";
 
     return {
       title,
       description,
-      keywords: [
-        "профиль",
-        "пользователь",
-        "дневники",
-        user.name,
-        "Hermit Diary",
-      ],
+      keywords: ["profile", "user", "diaries", user.name, "Hermit Diary"],
       authors: [{ name: user.name }],
       creator: user.name,
       publisher: "Hermit Diary",
@@ -43,10 +37,10 @@ export async function generateMetadata({
             url: imageUrl,
             width: 400,
             height: 400,
-            alt: `Аватар пользователя ${user.name}`,
+            alt: `User avatar ${user.name}`,
           },
         ],
-        locale: "ru_RU",
+        locale: "en_US",
       },
       twitter: {
         card: "summary",
@@ -66,8 +60,8 @@ export async function generateMetadata({
     };
   } catch (error) {
     return {
-      title: "Профиль пользователя - Hermit Diary",
-      description: "Профиль пользователя",
+      title: "User profile - Hermit Diary",
+      description: "User profile",
       robots: {
         index: false,
         follow: false,
