@@ -84,12 +84,14 @@ export class NotesService {
 
   async selectQuery({
     noteId,
+    notesIds,
     user,
     diaryId,
     selectUser,
     verbose,
   }: {
     noteId?: number;
+    notesIds?: number[];
     user?: User;
     diaryId?: number;
     selectUser?: boolean;
@@ -130,6 +132,11 @@ export class NotesService {
     if (noteId !== undefined) {
       query = query.andWhere('note.id = :noteId', { noteId });
     }
+    if (notesIds) {
+      if (notesIds.length > 0) {
+        query = query.andWhere('note.id IN (:...notesIds)', { notesIds });
+      }
+    }
     if (diaryId !== undefined) {
       query = query.andWhere('diary.id = :diaryId', { diaryId });
     }
@@ -154,6 +161,24 @@ export class NotesService {
 
   async fetch(params: Parameters<typeof this.selectQuery>[0]): Promise<Note[]> {
     const notes = await (await this.selectQuery(params)).getMany();
+    const ids = notes.map((x) => x.id);
+    const relatedNotes = notes.flatMap((x) => [...x.outcomingLinks]);
+    const relatedNotesIds = relatedNotes.map((x) => x.id);
+    if (relatedNotesIds.length > 0) {
+      const relatedNotesFetched = await (
+        await this.selectQuery({
+          ...params,
+          diaryId: undefined,
+          noteId: undefined,
+          notesIds: relatedNotesIds,
+        })
+      ).getMany();
+      const relatedFiltered = relatedNotesFetched.filter(
+        (x) => !ids.includes(x.id),
+      );
+      notes.push(...relatedFiltered);
+    }
+
     const props = await this.propertiesService.getPropertiesForMultipleTargets(
       'note',
       notes.map((x) => x.id),

@@ -34,6 +34,7 @@ export type TimeCircleApi = {
 
 export type NotesCircleProps = {
   notes: DiaryNote[];
+  currentDiaryId?: number | null;
   onNoteSelected: (note: DiaryNote) => void;
   activeNoteId?: number | null;
   accentColor?: string;
@@ -86,6 +87,7 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
   (
     {
       notes,
+      currentDiaryId,
       onNoteSelected,
       activeNoteId,
       accentColor,
@@ -294,6 +296,10 @@ export const TimeCircle = forwardRef<TimeCircleApi, NotesCircleProps>(
                         `${note.properties.timePosition !== undefined}`
                       }
                       note={note}
+                      isExternal={
+                        note.diary !== undefined &&
+                        note.diary?.id !== currentDiaryId
+                      }
                       accentColor={accentColor}
                       active={note.id == activeNoteId}
                       titleType={

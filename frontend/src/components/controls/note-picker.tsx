@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,11 +13,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getDiaryNotes } from "@/services/methods/user/notes";
+import { getDiaryNote, getDiaryNotes } from "@/services/methods/user/notes";
 import { DiaryNote } from "@/services/types/notes";
 import classNames from "classnames";
-import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Check,
+  ChevronsUpDown,
+  CircleDotDashedIcon,
+  GlobeIcon,
+  NotebookIcon,
+  NotebookTextIcon,
+} from "lucide-react";
 import React from "react";
+import { Switch } from "../ui/switch";
+import { SearchNoteSchema } from "@/services/types/search";
+import NotesSearch from "../layout/search";
 
 // TODO: потом можно сделать поиск по api когда будет готов typesense
 
@@ -41,6 +51,12 @@ export function NotePicker({
     setNotes(fetchedNotes);
   }, []);
 
+  const onSelected = React.useCallback(async (note: SearchNoteSchema) => {
+    const fetchedNote = await getDiaryNote(parseInt(note.id));
+    onValueChange(fetchedNote);
+    setOpen(false);
+  }, []);
+
   React.useEffect(() => {
     if (open) {
       loadNotes();
@@ -48,34 +64,35 @@ export function NotePicker({
   }, [open]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="flex w-[200px] items-center justify-between bg-secondary p-2">
+    <SearchButton
+      onSelected={onSelected}
+      variant="outline"
+      className="flex items-center justify-between bg-secondary p-2"
+    >
+      <div className="flex items-center gap-2">
+        <NotebookTextIcon />
         {value ? value.name : "Select note..."}
-        <ChevronsUpDown />
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search note..." className="h-9" />
-          <CommandEmpty>No note found.</CommandEmpty>
-          <CommandGroup>
-            {notes.map((note) => (
-              <CommandItem
-                key={note.id}
-                value={note.name}
-                onSelect={(value) => onValueChange(note)}
-              >
-                {note.name}
-                <Check
-                  className={classNames(
-                    "ml-auto",
-                    value?.id == note.id ? "opacity-100" : "opacity-0",
-                  )}
-                />
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+      </div>
+      <ChevronsUpDown />
+    </SearchButton>
+  );
+}
+
+function SearchButton({
+  onSelected,
+  ...props
+}: {
+  onSelected: (note: SearchNoteSchema) => void;
+} & ButtonProps) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <NotesSearch
+        open={open}
+        setOpen={setOpen}
+        onSelected={onSelected}
+      ></NotesSearch>
+      <Button {...props} onClick={() => setOpen(true)} />
+    </>
   );
 }

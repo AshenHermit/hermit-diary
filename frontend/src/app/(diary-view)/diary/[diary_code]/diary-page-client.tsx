@@ -72,6 +72,7 @@ export default function DiaryPageClient() {
           <NotesGraph
             accentColor={properties.accentColor}
             notes={notes}
+            currentDiaryId={diaryId}
             onNoteSelected={onSelectedNote}
             activeNoteId={activeNote?.id}
           />
@@ -80,6 +81,7 @@ export default function DiaryPageClient() {
             state={timeCircleState}
             accentColor={properties.accentColor}
             notes={notes}
+            currentDiaryId={diaryId}
             onNoteSelected={onSelectedNote}
             activeNoteId={activeNote?.id}
             ref={(api: TimeCircleApi | null) => {

@@ -160,13 +160,12 @@ function NoteHeader() {
                   <BookOpenText /> open as page
                 </Link>
               </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href={diaryLink} className="focus-visible:ring-0">
-                  <CircleDotDashed /> open in diary
-                </Link>
-              </DropdownMenuItem>
-            )}
+            ) : null}
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href={diaryLink} className="focus-visible:ring-0">
+                <CircleDotDashed /> open in diary
+              </Link>
+            </DropdownMenuItem>
             {canEdit ? (
               <>
                 <DropdownMenuCheckboxItem

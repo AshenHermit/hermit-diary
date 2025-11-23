@@ -16,6 +16,7 @@ export type DiaryNote = NoteBase & {
   isPublic: boolean;
   incomingLinks: NoteBase[];
   outcomingLinks: NoteBase[];
+  diary?: Diary;
 };
 
 export type GlobalNote = DiaryNote & {
