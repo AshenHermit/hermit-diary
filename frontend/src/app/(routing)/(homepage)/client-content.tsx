@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import NotesSearch from "@/components/layout/search";
 import Link from "next/link";
+import FeedbackWidget from "@/components/controls/fast-feedback";
 
 export function MainPageClientContent() {
   const [searchOpen, setSearchOpen] = React.useState(false);
@@ -43,6 +44,7 @@ export function MainPageClientContent() {
           <LightbulbIcon className="!size-6" /> Post Issue or Suggestion
         </Button>
       </Link>
+      <FeedbackWidget />
     </>
   );
 }
