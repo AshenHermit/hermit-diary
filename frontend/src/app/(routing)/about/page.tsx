@@ -16,7 +16,7 @@ export default async function Page() {
         wrapper: "flex flex-col gap-4 md:max-w-[1000px] md:min-w-[1000px]",
       }}
     >
-      <div className="text-lg font-semibold">О проекте</div>
+      <div className="text-lg font-semibold">About</div>
       <Suspense>
         <RichContentEditor
           diaryId={note.diary.id}

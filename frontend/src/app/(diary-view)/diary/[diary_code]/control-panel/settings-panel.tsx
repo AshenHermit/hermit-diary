@@ -70,7 +70,7 @@ const sections = [
     key: "general",
     title: (
       <>
-        <CircleDashedIcon /> Основные
+        <CircleDashedIcon /> General
       </>
     ),
     content: <GeneralSettings />,
@@ -79,7 +79,7 @@ const sections = [
     key: "description",
     title: (
       <>
-        <ScrollText /> Описание
+        <ScrollText /> Description
       </>
     ),
     content: <DiaryDescriptionEditor />,
@@ -88,7 +88,7 @@ const sections = [
     key: "properties",
     title: (
       <>
-        <BoltIcon /> Свойства
+        <BoltIcon /> Properties
       </>
     ),
     content: <PropertiesSection />,
@@ -97,7 +97,7 @@ const sections = [
     key: "danger",
     title: (
       <>
-        <TriangleAlertIcon /> Опасная зона
+        <TriangleAlertIcon /> Danger Zone
       </>
     ),
     content: <DangerZoneSection />,
@@ -107,7 +107,7 @@ const sections = [
 export function SettingsPanel() {
   return (
     <DiaryTabPanel>
-      <div className="text-lg font-semibold">Настройки дневника</div>
+      <div className="text-lg font-semibold">Diary settings</div>
       <Accordion type="multiple" defaultValue={["general"]}>
         {sections.map((x) => (
           <AccordionItem key={x.key} value={x.key}>
@@ -171,9 +171,9 @@ function GeneralSettings() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Название</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="название" {...field} />
+                  <Input placeholder="name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -184,7 +184,7 @@ function GeneralSettings() {
             name="isPublic"
             render={({ field }) => (
               <FormItem className="flex items-center justify-between gap-4">
-                <FormLabel>Открытый доступ</FormLabel>
+                <FormLabel>Public access</FormLabel>
                 <FormControl>
                   <Switch
                     className="!m-0"
@@ -226,10 +226,10 @@ function DangerZoneSection() {
       <ConfirmDialog
         apiRef={deletionDialogApi}
         onConfirm={onDelitionConfirm}
-        title={"Удаление дневника"}
-        description={"Безвозвратно"}
-        okContent={"Удалить"}
-        cancelContent={"Отмена"}
+        title={"Delete diary"}
+        description={"This action cannot be undone"}
+        okContent={"Delete"}
+        cancelContent={"Cancel"}
         danger
       />
       <Button

@@ -7,11 +7,11 @@ import { AppConfigService } from './config.service';
 @Module({
   imports: [
     NestConfigModule.forRoot({
-      isGlobal: true, // делает `ConfigService` глобальным
+      isGlobal: true, // makes `ConfigService` global
       load: [configuration],
     }),
   ],
   providers: [AppConfigService],
-  exports: [AppConfigService], // экспортируем, чтобы использовать в других модулях
+  exports: [AppConfigService], // export to use in other modules
 })
 export class AppConfigModule {}

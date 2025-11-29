@@ -29,8 +29,6 @@ import { Switch } from "../ui/switch";
 import { SearchNoteSchema } from "@/services/types/search";
 import NotesSearch from "../layout/search";
 
-// TODO: потом можно сделать поиск по api когда будет готов typesense
-
 export function NotePicker({
   diaryId,
   value,

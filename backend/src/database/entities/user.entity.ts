@@ -6,23 +6,23 @@ import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
-  @ApiProperty({ example: 1, description: 'Уникальный ID пользователя' })
+  @ApiProperty({ example: 1, description: 'Unique user ID' })
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({
     example: 'user@example.com',
-    description: 'Email пользователя',
+    description: 'User email',
   })
   @Column({ unique: true })
   email: string;
 
-  @ApiProperty({ example: 'hashpass', description: 'Хэшированный пароль' })
+  @ApiProperty({ example: 'hashpass', description: 'Hashed password' })
   @Column({ select: false })
   @Exclude({ toClassOnly: true })
   password: string;
 
-  @ApiProperty({ example: 'Anna Lord', description: 'Имя пользователя' })
+  @ApiProperty({ example: 'Anna Lord', description: 'User name' })
   @Column()
   name: string;
 
@@ -39,7 +39,7 @@ export class User {
 
   @ApiProperty({
     example: 'google',
-    description: 'Сервис авторизации',
+    description: 'Authorization service',
   })
   @Column({ default: 'email' })
   service: 'email' | 'google' | 'vk' | 'yandex' | 'github';

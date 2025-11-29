@@ -3,6 +3,7 @@ import {
   Artefact,
   ArtefactUpdateDTO,
   DiaryNote,
+  UpdateDTO,
   VerboseNote,
 } from "@/services/types/notes";
 import { apiClient } from "@/services/api-client/client-api";
@@ -60,8 +61,8 @@ export async function getDiaryNote(noteId: number) {
   return await apiClient.get<VerboseNote, {}>(`notes/${noteId}`);
 }
 
-export async function updateDiaryNote(note: Partial<VerboseNote>) {
-  return await apiClient.patch<boolean, Partial<VerboseNote>>(
+export async function updateDiaryNote(note: Partial<UpdateDTO>) {
+  return await apiClient.patch<boolean, Partial<UpdateDTO>>(
     `notes/${note.id}`,
     note,
   );

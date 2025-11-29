@@ -17,8 +17,8 @@ export async function generateMetadata({
     const title = `${diary.name} - Hermit Diary`;
     const descriptionText = getContentText(diary.description);
     const description = descriptionText
-      ? `Дневник ${diary.user.name}: ${descriptionText}`
-      : `Дневник ${diary.user.name}`;
+      ? `Diary ${diary.user.name}: ${descriptionText}`
+      : `Diary ${diary.user.name}`;
 
     const imageUrl =
       properties.coverImage || diary.picture || "/textures/bg.png";
@@ -27,9 +27,9 @@ export async function generateMetadata({
       title,
       description,
       keywords: [
-        "дневник",
-        "заметки",
-        "личный дневник",
+        "diary",
+        "notes",
+        "personal diary",
         diary.name,
         diary.user.name,
       ],
@@ -47,10 +47,10 @@ export async function generateMetadata({
             url: imageUrl,
             width: 1200,
             height: 630,
-            alt: `Обложка дневника ${diary.name}`,
+            alt: `Diary cover ${diary.name}`,
           },
         ],
-        locale: "ru_RU",
+        locale: "en_US",
       },
       twitter: {
         card: "summary_large_image",
@@ -72,8 +72,8 @@ export async function generateMetadata({
   } catch (error) {
     // Fallback metadata if diary loading fails
     return {
-      title: "Дневник - Hermit Diary",
-      description: "Персональный дневник",
+      title: "Diary - Hermit Diary",
+      description: "Personal diary",
       robots: {
         index: false,
         follow: false,

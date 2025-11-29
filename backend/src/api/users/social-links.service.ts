@@ -12,7 +12,7 @@ import { IsOptional, IsString } from 'class-validator';
 export class UpdateSocialLinkDTO {
   @ApiProperty({
     example: 'vk',
-    description: 'название для ссылки',
+    description: 'link title',
   })
   @IsOptional()
   @IsString()
@@ -20,15 +20,15 @@ export class UpdateSocialLinkDTO {
 
   @ApiProperty({
     example: 'https://vk.com/user',
-    description: 'ссылка на внешний сайт',
+    description: 'link to external site',
   })
   @IsOptional()
   @IsString()
   url: string;
 
   @ApiProperty({
-    example: 'описание',
-    description: 'описание',
+    example: 'description',
+    description: 'description',
   })
   @IsOptional()
   @IsString()

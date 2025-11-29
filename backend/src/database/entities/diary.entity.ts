@@ -13,7 +13,7 @@ import { Note } from './note.entity';
 
 @Entity()
 export class Diary {
-  @ApiProperty({ example: 1, description: 'Уникальный ID дневника' })
+  @ApiProperty({ example: 1, description: 'Unique diary ID' })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -32,7 +32,7 @@ export class Diary {
   })
   public updatedAt: Date;
 
-  @ApiProperty({ example: 'Untitled', description: 'Имя дневника' })
+  @ApiProperty({ example: 'Untitled', description: 'Diary name' })
   @Column({ default: 'Untitled' })
   name: string;
 

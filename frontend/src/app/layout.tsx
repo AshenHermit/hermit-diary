@@ -17,17 +17,17 @@ const font = Montserrat({ subsets: ["latin", "cyrillic"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Hermit Diary - Персональный дневник",
+    default: "Hermit Diary - Personal Diary",
     template: "%s | Hermit Diary",
   },
   description:
-    "Создавайте и ведите персональные дневники с прикольными визуализациями. Организуйте мысли, идеи и воспоминания в удобном формате.",
+    "Create and maintain personal diaries with cool visualizations. Organize thoughts, ideas and memories in a convenient format.",
   keywords: [
-    "дневник",
-    "персональный дневник",
-    "заметки",
-    "организация мыслей",
-    "визуализация",
+    "diary",
+    "personal diary",
+    "notes",
+    "thought organization",
+    "visualization",
     "Hermit Diary",
   ],
   authors: [{ name: "Hermit" }],
@@ -44,18 +44,18 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "ru_RU",
+    locale: "en_US",
     url: "/",
     siteName: "Hermit Diary",
-    title: "Hermit Diary - Персональный дневник",
+    title: "Hermit Diary - Personal Diary",
     description:
-      "Создавайте и ведите персональные дневники с прикольными визуализациями",
+      "Create and maintain personal diaries with cool visualizations",
     images: [
       {
         url: "/textures/bg.png",
         width: 1200,
         height: 630,
-        alt: "Hermit Diary - Персональный дневник",
+        alt: "Hermit Diary - Personal Diary",
       },
     ],
   },
@@ -102,7 +102,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
+    <html lang="en">
       <body
         className={classNames("dark bg-bg text-foreground", font.className)}
       >

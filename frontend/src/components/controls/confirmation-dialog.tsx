@@ -17,10 +17,10 @@ export function ConfirmDialog({
   apiRef,
   onConfirm,
   danger = false,
-  title = "удаление",
-  description = "безвозвратно",
-  cancelContent = "Отмена",
-  okContent = "Удалить",
+  title = "Deletion",
+  description = "This action cannot be undone",
+  cancelContent = "Cancel",
+  okContent = "Delete",
 }: {
   apiRef: React.MutableRefObject<ConfirmDialogApi | null>;
   onConfirm: () => Promise<void>;

@@ -135,7 +135,7 @@ export default function NotesSearch({
         </div>
         <DialogTitle className="hidden">Search</DialogTitle>
         <CommandInput
-          placeholder="Введите фразу для поиска записей..."
+          placeholder="Enter phrase to search notes..."
           onValueChange={handleValueChange}
           value={inputValue}
         />
