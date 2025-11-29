@@ -2,6 +2,7 @@
 
 import { decodeId } from "@/lib/hash-utils";
 import * as NotesAPI from "@/services/methods/user/notes";
+import * as DiariesAPI from "@/services/methods/user/diaries";
 import React from "react";
 import { useDiaryStore } from "./diary-store";
 
@@ -11,6 +12,9 @@ export function ConsoleApi() {
     const api = {
       notes: {
         ...NotesAPI,
+      },
+      diaries: {
+        ...DiariesAPI,
       },
       diaryStore,
       decodeId,
