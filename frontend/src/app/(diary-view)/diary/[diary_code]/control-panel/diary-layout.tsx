@@ -39,6 +39,7 @@ import {
   useSearchParams,
 } from "next/navigation";
 import React, { Suspense } from "react";
+import { ConsoleApi } from "../console-api";
 
 const tabsRaw = [
   {
@@ -125,6 +126,7 @@ export function DiaryLayout({ children }: React.PropsWithChildren) {
     <>
       <DiaryStylesApplier properties={properties} />
       <Suspense>
+        <ConsoleApi />
         <SelectedNoteLoader />
         <TabSelector />
         <SearchParamsSetter />
