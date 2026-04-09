@@ -17,7 +17,7 @@ services:
   typesense:
     image: typesense/typesense:28.0
     container_name: hdiary_typesense
-    restart: on-failure
+    restart: always
     ports:
       - "${TYPESENSE_EXTERNAL_PORT}:8108"
     volumes:
